@@ -217,7 +217,7 @@ def wait_for_findings(method_name, method_argument, log_level):
         log_level: The log level as set by the user.
 
     Returns:
-        findings: A list of security hub findings as retrieved by the callable.
+        findings: A list of defender for cloud findings as retrieved by the callable.
 
     """
     try:
@@ -306,6 +306,8 @@ def get_subscription_reporting_data(
         report_data, exporter_arguments
 
     """
+    _allowed_subscription_ids = []
+    _allowed_subscription_ids.append(subscription_id)
     labeler = EnergyLabeler(tenant_id=tenant_id,
                             client_id=client_id,
                             client_secret=client_secret,
@@ -313,7 +315,7 @@ def get_subscription_reporting_data(
                             resource_group_thresholds=RESOURCE_GROUP_THRESHOLDS,
                             subscription_thresholds=SUBSCRIPTION_THRESHOLDS,
                             frameworks=DEFAULT_DEFENDER_FOR_CLOUD_FRAMEWORKS,
-                            allowed_subscription_ids=[subscription_id])
+                            allowed_subscription_ids=_allowed_subscription_ids)
     tenant = labeler.tenant
     defender_for_cloud_findings = wait_for_findings(EnergyLabeler.defender_for_cloud_findings.fget, labeler, log_level)
     subscription = next(
