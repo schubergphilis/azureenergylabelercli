@@ -36,6 +36,7 @@ import json
 from art import text2art
 from azureenergylabelerlib import DataExporter
 from terminaltables import AsciiTable
+from azure.identity import DefaultAzureCredential
 from azureenergylabelercli import (get_arguments,
                                    setup_logging,
                                    get_tenant_reporting_data,
@@ -57,11 +58,10 @@ LOGGER = logging.getLogger(LOGGER_BASENAME)
 LOGGER.addHandler(logging.NullHandler())
 
 
-def _get_reporting_arguments(args):
+def _get_reporting_arguments(args, credentials):
     method_arguments = {'export_all_data_flag': args.export_all,
+                        'credentials': credentials,
                         'tenant_id': args.tenant_id,
-                        'client_id': args.client_id,
-                        'client_secret': args.client_secret,
                         'log_level': args.log_level}
     if args.single_subscription_id:
         get_reporting_data = get_subscription_reporting_data
@@ -93,7 +93,9 @@ def main():
     logging.getLogger('botocore').setLevel(logging.ERROR)
     try:
         print(text2art("Azure Energy Labeler"))
-        report_data, exporter_arguments = _get_reporting_arguments(args)
+        # Tries to authenticate using environment variables, managed identity, azure cli and more
+        credentials = DefaultAzureCredential()
+        report_data, exporter_arguments = _get_reporting_arguments(args, credentials)
         if args.export_path:
             LOGGER.info(f'Trying to export data to the requested path : {args.export_path}')
             exporter = DataExporter(**exporter_arguments)

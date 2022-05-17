@@ -46,6 +46,7 @@ from azureenergylabelerlib import (EnergyLabeler,
                                    SUBSCRIPTION_THRESHOLDS,
                                    RESOURCE_GROUP_THRESHOLDS,
                                    TENANT_METRIC_EXPORT_TYPES)
+
 from yaspin import yaspin
 from .validators import ValidatePath, azure_subscription_id
 
@@ -99,18 +100,6 @@ def get_arguments():
                         required=True,
                         type=str,
                         help='The ID of the Tenant to labeled')
-    parser.add_argument('--client-id',
-                        '-cid',
-                        dest='client_id',
-                        required=True,
-                        type=str,
-                        help='The Client ID of the Service Principal.')
-    parser.add_argument('--client-secret',
-                        '-csec',
-                        dest='client_secret',
-                        required=True,
-                        type=str,
-                        help='The Client Secret of the Service Principal.')
     single_subscription_action = parser.add_argument('--single-subscription-id',
                                                      '-s',
                                                      required=False,
@@ -235,8 +224,7 @@ def wait_for_findings(method_name, method_argument, log_level):
 
 #  pylint: disable=too-many-arguments
 def get_tenant_reporting_data(tenant_id,
-                              client_id,
-                              client_secret,
+                              credentials,
                               allowed_subscription_ids,
                               denied_subscription_ids,
                               export_all_data_flag,
@@ -245,8 +233,7 @@ def get_tenant_reporting_data(tenant_id,
 
     Args:
         tenant_id: Tenant Id of the tenant
-        client_id: Client ID of the service principal.
-        client_secret: Client Secret of the service principal
+        credentials: Credentials to access the environment
         allowed_subscription_ids: The allowed subscription ids for tenant inclusion if any.
         denied_subscription_ids: The denied subscription ids for tenant zone exclusion if any.
         export_all_data_flag: If set all data is going to be exported, else only basic reporting.
@@ -257,8 +244,7 @@ def get_tenant_reporting_data(tenant_id,
 
     """
     labeler = EnergyLabeler(tenant_id=tenant_id,
-                            client_id=client_id,
-                            client_secret=client_secret,
+                            credentials=credentials,
                             tenant_thresholds=TENANT_THRESHOLDS,
                             resource_group_thresholds=RESOURCE_GROUP_THRESHOLDS,
                             subscription_thresholds=SUBSCRIPTION_THRESHOLDS,
@@ -287,8 +273,7 @@ def get_tenant_reporting_data(tenant_id,
 #  pylint: disable=too-many-arguments
 def get_subscription_reporting_data(
         tenant_id,
-        client_id,
-        client_secret,
+        credentials,
         subscription_id,
         export_all_data_flag,
         log_level):
@@ -296,8 +281,7 @@ def get_subscription_reporting_data(
 
     Args:
         tenant_id: Tenant Id of the tenant
-        client_id: Client ID of the service principal.
-        client_secret: Client Secret of the service principal
+        credentials: Credentials to access the environment
         subscription_id: The ID of the subscription to get reporting on.
         export_all_data_flag: If set all data is going to be exported, else only basic reporting.
         log_level: The log level set.
@@ -306,11 +290,11 @@ def get_subscription_reporting_data(
         report_data, exporter_arguments
 
     """
+
     _allowed_subscription_ids = []
     _allowed_subscription_ids.append(subscription_id)
     labeler = EnergyLabeler(tenant_id=tenant_id,
-                            client_id=client_id,
-                            client_secret=client_secret,
+                            credentials=credentials,
                             tenant_thresholds=TENANT_THRESHOLDS,
                             resource_group_thresholds=RESOURCE_GROUP_THRESHOLDS,
                             subscription_thresholds=SUBSCRIPTION_THRESHOLDS,
