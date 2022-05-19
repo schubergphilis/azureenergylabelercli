@@ -224,7 +224,6 @@ def wait_for_findings(method_name, method_argument, log_level):
 
 #  pylint: disable=too-many-arguments
 def get_tenant_reporting_data(tenant_id,
-                              credentials,
                               allowed_subscription_ids,
                               denied_subscription_ids,
                               export_all_data_flag,
@@ -233,7 +232,6 @@ def get_tenant_reporting_data(tenant_id,
 
     Args:
         tenant_id: Tenant Id of the tenant
-        credentials: Credentials to access the environment
         allowed_subscription_ids: The allowed subscription ids for tenant inclusion if any.
         denied_subscription_ids: The denied subscription ids for tenant zone exclusion if any.
         export_all_data_flag: If set all data is going to be exported, else only basic reporting.
@@ -244,7 +242,6 @@ def get_tenant_reporting_data(tenant_id,
 
     """
     labeler = EnergyLabeler(tenant_id=tenant_id,
-                            credentials=credentials,
                             tenant_thresholds=TENANT_THRESHOLDS,
                             resource_group_thresholds=RESOURCE_GROUP_THRESHOLDS,
                             subscription_thresholds=SUBSCRIPTION_THRESHOLDS,
@@ -273,7 +270,6 @@ def get_tenant_reporting_data(tenant_id,
 #  pylint: disable=too-many-arguments
 def get_subscription_reporting_data(
         tenant_id,
-        credentials,
         subscription_id,
         export_all_data_flag,
         log_level):
@@ -281,7 +277,6 @@ def get_subscription_reporting_data(
 
     Args:
         tenant_id: Tenant Id of the tenant
-        credentials: Credentials to access the environment
         subscription_id: The ID of the subscription to get reporting on.
         export_all_data_flag: If set all data is going to be exported, else only basic reporting.
         log_level: The log level set.
@@ -294,7 +289,6 @@ def get_subscription_reporting_data(
     _allowed_subscription_ids = []
     _allowed_subscription_ids.append(subscription_id)
     labeler = EnergyLabeler(tenant_id=tenant_id,
-                            credentials=credentials,
                             tenant_thresholds=TENANT_THRESHOLDS,
                             resource_group_thresholds=RESOURCE_GROUP_THRESHOLDS,
                             subscription_thresholds=SUBSCRIPTION_THRESHOLDS,
