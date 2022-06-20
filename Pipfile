@@ -23,10 +23,10 @@ flake8 = "==3.8.0"
 
 [packages]
 coloredlogs = "~=10.0"
+azureenergylabelerlib = {path = "./../azureenergylabelerlib/dist/azureenergylabelerlib-0.0.0.tar.gz"}
 yaspin = "~=2.1.0"
 terminaltables = "~=3.1.0"
 art = "~=5.3"
-azureenergylabelerlib = {path = "./../azureenergylabelerlib/dist/azureenergylabelerlib-0.0.0.tar.gz"}
 
 [requires]
 python_version = "3"
