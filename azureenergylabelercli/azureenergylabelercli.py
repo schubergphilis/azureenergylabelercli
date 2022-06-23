@@ -37,7 +37,7 @@ import json
 import argparse
 import coloredlogs
 
-from azureenergylabelerlib import (EnergyLabeler,
+from azureenergylabelerlib import (AzureEnergyLabeler,
                                    DEFAULT_DEFENDER_FOR_CLOUD_FRAMEWORKS,
                                    ALL_TENANT_EXPORT_TYPES,
                                    ALL_SUBSCRIPTION_EXPORT_DATA,
@@ -222,7 +222,6 @@ def wait_for_findings(method_name, method_argument, log_level):
     return findings
 
 
-#  pylint: disable=too-many-arguments
 def get_tenant_reporting_data(tenant_id,
                               allowed_subscription_ids,
                               denied_subscription_ids,
@@ -241,14 +240,14 @@ def get_tenant_reporting_data(tenant_id,
         report_data, exporter_arguments
 
     """
-    labeler = EnergyLabeler(tenant_id=tenant_id,
-                            tenant_thresholds=TENANT_THRESHOLDS,
-                            resource_group_thresholds=RESOURCE_GROUP_THRESHOLDS,
-                            subscription_thresholds=SUBSCRIPTION_THRESHOLDS,
-                            frameworks=DEFAULT_DEFENDER_FOR_CLOUD_FRAMEWORKS,
-                            allowed_subscription_ids=allowed_subscription_ids,
-                            denied_subscription_ids=denied_subscription_ids)
-    wait_for_findings(EnergyLabeler.defender_for_cloud_findings.fget, labeler, log_level)
+    labeler = AzureEnergyLabeler(tenant_id=tenant_id,
+                                 tenant_thresholds=TENANT_THRESHOLDS,
+                                 resource_group_thresholds=RESOURCE_GROUP_THRESHOLDS,
+                                 subscription_thresholds=SUBSCRIPTION_THRESHOLDS,
+                                 frameworks=DEFAULT_DEFENDER_FOR_CLOUD_FRAMEWORKS,
+                                 allowed_subscription_ids=allowed_subscription_ids,
+                                 denied_subscription_ids=denied_subscription_ids)
+    wait_for_findings(AzureEnergyLabeler.defender_for_cloud_findings.fget, labeler, log_level)
     report_data = [['Tenant ID:', tenant_id],
                    ['Tenant Security Score:', labeler.tenant_energy_label.label],
                    ['Tenant Percentage Coverage:', labeler.tenant_energy_label.coverage],
@@ -267,7 +266,6 @@ def get_tenant_reporting_data(tenant_id,
     return report_data, exporter_arguments
 
 
-#  pylint: disable=too-many-arguments
 def get_subscription_reporting_data(
         tenant_id,
         subscription_id,
@@ -285,17 +283,18 @@ def get_subscription_reporting_data(
         report_data, exporter_arguments
 
     """
-
     _allowed_subscription_ids = []
     _allowed_subscription_ids.append(subscription_id)
-    labeler = EnergyLabeler(tenant_id=tenant_id,
-                            tenant_thresholds=TENANT_THRESHOLDS,
-                            resource_group_thresholds=RESOURCE_GROUP_THRESHOLDS,
-                            subscription_thresholds=SUBSCRIPTION_THRESHOLDS,
-                            frameworks=DEFAULT_DEFENDER_FOR_CLOUD_FRAMEWORKS,
-                            allowed_subscription_ids=_allowed_subscription_ids)
+    labeler = AzureEnergyLabeler(tenant_id=tenant_id,
+                                 tenant_thresholds=TENANT_THRESHOLDS,
+                                 resource_group_thresholds=RESOURCE_GROUP_THRESHOLDS,
+                                 subscription_thresholds=SUBSCRIPTION_THRESHOLDS,
+                                 frameworks=DEFAULT_DEFENDER_FOR_CLOUD_FRAMEWORKS,
+                                 allowed_subscription_ids=_allowed_subscription_ids)
     tenant = labeler.tenant
-    defender_for_cloud_findings = wait_for_findings(EnergyLabeler.defender_for_cloud_findings.fget, labeler, log_level)
+    defender_for_cloud_findings = wait_for_findings(AzureEnergyLabeler.defender_for_cloud_findings.fget,
+                                                    labeler,
+                                                    log_level)
     subscription = next(
         subscription for subscription in tenant.subscriptions if subscription.subscription_id == subscription_id)
     energy_label = subscription.get_energy_label(defender_for_cloud_findings)

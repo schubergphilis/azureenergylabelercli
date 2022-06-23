@@ -55,7 +55,7 @@ LOGGER = logging.getLogger(LOGGER_BASENAME)
 LOGGER.addHandler(logging.NullHandler())
 
 
-class ValidatePath(argparse.Action):  # pylint: disable=too-few-public-methods
+class ValidatePath(argparse.Action):
     """Validates a given path."""
 
     def __init__(self, option_strings, dest, nargs=None, **kwargs):
