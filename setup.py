@@ -32,7 +32,7 @@ setup(
     long_description=readme + '\n\n' + history,
     author='''Sayantan Khanra''',
     author_email='''skhanra@schubergphilis.com''',
-    url='''https://enx.gitlab.schubergphilis.com/python/azureenergylabelercli''',
+    url='''https://github.com/schubergphilis/azureenergylabelercli.git''',
     packages=find_packages(where='.', exclude=('tests', 'hooks', '_CI*')),
     package_dir={'''azureenergylabelercli''':
                  '''azureenergylabelercli'''},
@@ -45,8 +45,9 @@ setup(
                    'console_scripts': [
                        # enable this to automatically generate a script in /usr/local/bin called myscript that points to your
                        #  azureenergylabelercli.azureenergylabelercli:main method
-                       # 'myscript = azureenergylabelercli.azureenergylabelercli:main'
+                       'azure-energy-labeler = azure_energy_labeler_cli:main'
                    ]},
+    scripts=['azure_energy_labeler_cli.py'],
     classifiers=[
         'Development Status :: 1 - Planning',
         'Intended Audience :: Developers',

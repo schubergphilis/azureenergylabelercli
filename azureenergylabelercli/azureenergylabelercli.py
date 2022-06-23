@@ -314,19 +314,3 @@ def get_subscription_reporting_data(
                           'labeled_subscriptions': subscription,
                           'credentials': labeler.tenant_credentials}
     return report_data, exporter_arguments
-
-
-def main():
-    """
-    Main method.
-
-    This method holds what you want to execute when
-    the script is run on command line.
-    """
-    args = get_arguments()
-    setup_logging(args.log_level, args.logger_config)
-    # Main code goes here
-
-
-if __name__ == '__main__':
-    main()
