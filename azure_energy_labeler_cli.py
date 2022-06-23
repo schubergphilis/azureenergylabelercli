@@ -60,8 +60,6 @@ LOGGER.addHandler(logging.NullHandler())
 def _get_reporting_arguments(args):
     method_arguments = {'export_all_data_flag': args.export_all,
                         'tenant_id': args.tenant_id,
-                        'client_id': args.client_id,
-                        'client_secret': args.client_secret,
                         'log_level': args.log_level}
     if args.single_subscription_id:
         get_reporting_data = get_subscription_reporting_data

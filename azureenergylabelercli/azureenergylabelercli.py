@@ -37,7 +37,7 @@ import json
 import argparse
 import coloredlogs
 
-from azureenergylabelerlib import (EnergyLabeler,
+from azureenergylabelerlib import (AzureEnergyLabeler,
                                    DEFAULT_DEFENDER_FOR_CLOUD_FRAMEWORKS,
                                    ALL_TENANT_EXPORT_TYPES,
                                    ALL_SUBSCRIPTION_EXPORT_DATA,
@@ -46,6 +46,7 @@ from azureenergylabelerlib import (EnergyLabeler,
                                    SUBSCRIPTION_THRESHOLDS,
                                    RESOURCE_GROUP_THRESHOLDS,
                                    TENANT_METRIC_EXPORT_TYPES)
+
 from yaspin import yaspin
 from .validators import ValidatePath, azure_subscription_id
 
@@ -99,18 +100,6 @@ def get_arguments():
                         required=True,
                         type=str,
                         help='The ID of the Tenant to labeled')
-    parser.add_argument('--client-id',
-                        '-cid',
-                        dest='client_id',
-                        required=True,
-                        type=str,
-                        help='The Client ID of the Service Principal.')
-    parser.add_argument('--client-secret',
-                        '-csec',
-                        dest='client_secret',
-                        required=True,
-                        type=str,
-                        help='The Client Secret of the Service Principal.')
     single_subscription_action = parser.add_argument('--single-subscription-id',
                                                      '-s',
                                                      required=False,
@@ -233,10 +222,7 @@ def wait_for_findings(method_name, method_argument, log_level):
     return findings
 
 
-#  pylint: disable=too-many-arguments
 def get_tenant_reporting_data(tenant_id,
-                              client_id,
-                              client_secret,
                               allowed_subscription_ids,
                               denied_subscription_ids,
                               export_all_data_flag,
@@ -245,8 +231,6 @@ def get_tenant_reporting_data(tenant_id,
 
     Args:
         tenant_id: Tenant Id of the tenant
-        client_id: Client ID of the service principal.
-        client_secret: Client Secret of the service principal
         allowed_subscription_ids: The allowed subscription ids for tenant inclusion if any.
         denied_subscription_ids: The denied subscription ids for tenant zone exclusion if any.
         export_all_data_flag: If set all data is going to be exported, else only basic reporting.
@@ -256,16 +240,14 @@ def get_tenant_reporting_data(tenant_id,
         report_data, exporter_arguments
 
     """
-    labeler = EnergyLabeler(tenant_id=tenant_id,
-                            client_id=client_id,
-                            client_secret=client_secret,
-                            tenant_thresholds=TENANT_THRESHOLDS,
-                            resource_group_thresholds=RESOURCE_GROUP_THRESHOLDS,
-                            subscription_thresholds=SUBSCRIPTION_THRESHOLDS,
-                            frameworks=DEFAULT_DEFENDER_FOR_CLOUD_FRAMEWORKS,
-                            allowed_subscription_ids=allowed_subscription_ids,
-                            denied_subscription_ids=denied_subscription_ids)
-    wait_for_findings(EnergyLabeler.defender_for_cloud_findings.fget, labeler, log_level)
+    labeler = AzureEnergyLabeler(tenant_id=tenant_id,
+                                 tenant_thresholds=TENANT_THRESHOLDS,
+                                 resource_group_thresholds=RESOURCE_GROUP_THRESHOLDS,
+                                 subscription_thresholds=SUBSCRIPTION_THRESHOLDS,
+                                 frameworks=DEFAULT_DEFENDER_FOR_CLOUD_FRAMEWORKS,
+                                 allowed_subscription_ids=allowed_subscription_ids,
+                                 denied_subscription_ids=denied_subscription_ids)
+    wait_for_findings(AzureEnergyLabeler.defender_for_cloud_findings.fget, labeler, log_level)
     report_data = [['Tenant ID:', tenant_id],
                    ['Tenant Security Score:', labeler.tenant_energy_label.label],
                    ['Tenant Percentage Coverage:', labeler.tenant_energy_label.coverage],
@@ -284,11 +266,8 @@ def get_tenant_reporting_data(tenant_id,
     return report_data, exporter_arguments
 
 
-#  pylint: disable=too-many-arguments
 def get_subscription_reporting_data(
         tenant_id,
-        client_id,
-        client_secret,
         subscription_id,
         export_all_data_flag,
         log_level):
@@ -296,8 +275,6 @@ def get_subscription_reporting_data(
 
     Args:
         tenant_id: Tenant Id of the tenant
-        client_id: Client ID of the service principal.
-        client_secret: Client Secret of the service principal
         subscription_id: The ID of the subscription to get reporting on.
         export_all_data_flag: If set all data is going to be exported, else only basic reporting.
         log_level: The log level set.
@@ -308,16 +285,16 @@ def get_subscription_reporting_data(
     """
     _allowed_subscription_ids = []
     _allowed_subscription_ids.append(subscription_id)
-    labeler = EnergyLabeler(tenant_id=tenant_id,
-                            client_id=client_id,
-                            client_secret=client_secret,
-                            tenant_thresholds=TENANT_THRESHOLDS,
-                            resource_group_thresholds=RESOURCE_GROUP_THRESHOLDS,
-                            subscription_thresholds=SUBSCRIPTION_THRESHOLDS,
-                            frameworks=DEFAULT_DEFENDER_FOR_CLOUD_FRAMEWORKS,
-                            allowed_subscription_ids=_allowed_subscription_ids)
+    labeler = AzureEnergyLabeler(tenant_id=tenant_id,
+                                 tenant_thresholds=TENANT_THRESHOLDS,
+                                 resource_group_thresholds=RESOURCE_GROUP_THRESHOLDS,
+                                 subscription_thresholds=SUBSCRIPTION_THRESHOLDS,
+                                 frameworks=DEFAULT_DEFENDER_FOR_CLOUD_FRAMEWORKS,
+                                 allowed_subscription_ids=_allowed_subscription_ids)
     tenant = labeler.tenant
-    defender_for_cloud_findings = wait_for_findings(EnergyLabeler.defender_for_cloud_findings.fget, labeler, log_level)
+    defender_for_cloud_findings = wait_for_findings(AzureEnergyLabeler.defender_for_cloud_findings.fget,
+                                                    labeler,
+                                                    log_level)
     subscription = next(
         subscription for subscription in tenant.subscriptions if subscription.subscription_id == subscription_id)
     energy_label = subscription.get_energy_label(defender_for_cloud_findings)
@@ -337,19 +314,3 @@ def get_subscription_reporting_data(
                           'labeled_subscriptions': subscription,
                           'credentials': labeler.tenant_credentials}
     return report_data, exporter_arguments
-
-
-def main():
-    """
-    Main method.
-
-    This method holds what you want to execute when
-    the script is run on command line.
-    """
-    args = get_arguments()
-    setup_logging(args.log_level, args.logger_config)
-    # Main code goes here
-
-
-if __name__ == '__main__':
-    main()
