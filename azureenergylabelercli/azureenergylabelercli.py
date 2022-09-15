@@ -49,7 +49,7 @@ from azureenergylabelerlib import (AzureEnergyLabeler,
                                    TENANT_METRIC_EXPORT_TYPES)
 
 from yaspin import yaspin
-from .validators import (ValidatePath, 
+from .validators import (ValidatePath,
                          azure_subscription_id,
                          get_mutually_exclusive_args)
 
@@ -172,10 +172,15 @@ def get_arguments():
                         help='Return the report in json format.')
     parser.set_defaults(export_all=True)
     args = parser.parse_args()
-    args.allowed_subscription_ids, args.denied_subscription_ids = get_mutually_exclusive_args(args.allowed_subscription_ids, 
-                                                                                              args.denied_subscription_ids,
-                                                                                              msg="conflicting arguments: --denied-subscription-ids and --allowed-subscription-ids")
-    args.tenant_id, _ = get_mutually_exclusive_args(args.tenant_id, None, required=True, msg="the following arguments are required: --tenant-id/-tid")
+    args.allowed_subscription_ids, args.denied_subscription_ids = get_mutually_exclusive_args(
+        args.allowed_subscription_ids,
+        args.denied_subscription_ids,
+        msg="conflicting arguments: --denied-subscription-ids, --allowed-subscription-ids")
+    args.tenant_id, _ = get_mutually_exclusive_args(
+        args.tenant_id,
+        None,
+        required=True,
+        msg="the following arguments are required: --tenant-id/-tid")
     return args
 
 
@@ -233,7 +238,7 @@ def wait_for_findings(method_name, method_argument, log_level):
     return findings
 
 
-def get_tenant_reporting_data(tenant_id,
+def get_tenant_reporting_data(tenant_id,  # pylint: disable=too-many-arguments
                               allowed_subscription_ids,
                               denied_subscription_ids,
                               export_all_data_flag,
@@ -283,6 +288,7 @@ def get_subscription_reporting_data(
         tenant_id,
         subscription_id,
         export_all_data_flag,
+        frameworks,
         log_level):
     """Gets the reporting data for a single account.
 
@@ -290,6 +296,7 @@ def get_subscription_reporting_data(
         tenant_id: Tenant Id of the tenant
         subscription_id: The ID of the subscription to get reporting on.
         export_all_data_flag: If set all data is going to be exported, else only basic reporting.
+        frameworks: The frameworks to include in scoring.
         log_level: The log level set.
 
     Returns:
@@ -302,7 +309,7 @@ def get_subscription_reporting_data(
                                  tenant_thresholds=TENANT_THRESHOLDS,
                                  resource_group_thresholds=RESOURCE_GROUP_THRESHOLDS,
                                  subscription_thresholds=SUBSCRIPTION_THRESHOLDS,
-                                 frameworks=DEFAULT_DEFENDER_FOR_CLOUD_FRAMEWORKS,
+                                 frameworks=frameworks,
                                  allowed_subscription_ids=_allowed_subscription_ids)
     tenant = labeler.tenant
     defender_for_cloud_findings = wait_for_findings(AzureEnergyLabeler.defender_for_cloud_findings.fget,

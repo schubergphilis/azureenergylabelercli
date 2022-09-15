@@ -58,7 +58,7 @@ LOGGER = logging.getLogger(LOGGER_BASENAME)
 LOGGER.addHandler(logging.NullHandler())
 
 
-class ValidatePath(argparse.Action):  # pylint: disable=too-few-public-methods
+class ValidatePath(argparse.Action):
     """Validates a given path."""
 
     def __init__(self, option_strings, dest, nargs=None, **kwargs):
@@ -98,6 +98,7 @@ def get_mutually_exclusive_args(arg1, arg2, required=False, msg=None):
 
     Returns:
         arg1 and arg2 after validation
+
     """
     if arg1 and arg2:
         raise MutuallyExclusiveArguments(arg1, arg2, msg)
