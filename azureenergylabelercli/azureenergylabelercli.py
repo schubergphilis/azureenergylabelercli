@@ -35,9 +35,10 @@ import logging
 import logging.config
 import json
 import argparse
-import coloredlogs
 import os
+import coloredlogs
 
+from yaspin import yaspin
 from azureenergylabelerlib import (AzureEnergyLabeler,
                                    DEFAULT_DEFENDER_FOR_CLOUD_FRAMEWORKS,
                                    ALL_TENANT_EXPORT_TYPES,
@@ -48,7 +49,6 @@ from azureenergylabelerlib import (AzureEnergyLabeler,
                                    RESOURCE_GROUP_THRESHOLDS,
                                    TENANT_METRIC_EXPORT_TYPES)
 
-from yaspin import yaspin
 from .validators import (ValidatePath,
                          azure_subscription_id,
                          get_mutually_exclusive_args)

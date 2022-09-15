@@ -34,8 +34,8 @@ Main code for azure_energy_labeler_cli.
 import logging
 import json
 from art import text2art
-from azureenergylabelerlib import DataExporter
 from terminaltables import AsciiTable
+from azureenergylabelerlib import DataExporter
 from azureenergylabelercli import (get_arguments,
                                    setup_logging,
                                    get_tenant_reporting_data,
