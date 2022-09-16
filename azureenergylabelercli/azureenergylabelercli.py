@@ -114,25 +114,25 @@ def get_arguments():
     parser.add_argument('--frameworks',
                         '-f',
                         default=os.environ.get('AZURE_LABELER_FRAMEWORKS', DEFAULT_DEFENDER_FOR_CLOUD_FRAMEWORKS),
-                        nargs='*',
+                        type=comma_delimited_list,
                         help='The list of applicable frameworks: \
-                                    ["Azure Security Benchmark", "SOC TSP", "Azure CIS 1.1.0"], '
+                                    ["Azure Security Benchmark", "Azure CIS 1.1.0"], '
                              'default=["Azure Security Benchmark"]')
     subscription_list = parser.add_mutually_exclusive_group()
     subscription_list._group_actions.append(single_subscription_action)  # pylint: disable=protected-access
     subscription_list.add_argument('--allowed-subscription-ids',
                                    '-a',
-                                   nargs='*',
                                    required=False,
                                    default=os.environ.get('AZURE_LABELER_ALLOWED_SUBSCRIPTION_IDS'),
+                                   type=comma_delimited_list,
                                    help='A list of Azure Subscription IDs for which an energy label will be produced. '
                                         'Mutually exclusive with '
                                         '--denied-subscription-ids and --single-subscription-id arguments.')
     subscription_list.add_argument('--denied-subscription-ids',
                                    '-d',
-                                   nargs='*',
                                    required=False,
                                    default=os.environ.get('AZURE_LABELER_DENIED_SUBSCRIPTION_IDS'),
+                                   type=comma_delimited_list,
                                    help='A list of Azure Subscription IDs that will '
                                         'be excluded from producing the energy label. '
                                         'Mutually exclusive with '
@@ -182,6 +182,10 @@ def get_arguments():
         required=True,
         msg="the following arguments are required: --tenant-id/-tid")
     return args
+
+
+def comma_delimited_list(argument):
+    return argument.split(',')
 
 
 def setup_logging(level, config_file=None):
