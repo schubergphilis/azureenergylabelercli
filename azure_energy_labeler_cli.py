@@ -34,8 +34,8 @@ Main code for azure_energy_labeler_cli.
 import logging
 import json
 from art import text2art
-from azureenergylabelerlib import DataExporter
 from terminaltables import AsciiTable
+from azureenergylabelerlib import DataExporter
 from azureenergylabelercli import (get_arguments,
                                    setup_logging,
                                    get_tenant_reporting_data,
@@ -60,6 +60,7 @@ LOGGER.addHandler(logging.NullHandler())
 def _get_reporting_arguments(args):
     method_arguments = {'export_all_data_flag': args.export_all,
                         'tenant_id': args.tenant_id,
+                        'frameworks': args.frameworks,
                         'log_level': args.log_level}
     if args.single_subscription_id:
         get_reporting_data = get_subscription_reporting_data

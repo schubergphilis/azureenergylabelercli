@@ -35,8 +35,10 @@ import logging
 import logging.config
 import json
 import argparse
+import os
 import coloredlogs
 
+from yaspin import yaspin
 from azureenergylabelerlib import (AzureEnergyLabeler,
                                    DEFAULT_DEFENDER_FOR_CLOUD_FRAMEWORKS,
                                    ALL_TENANT_EXPORT_TYPES,
@@ -47,8 +49,9 @@ from azureenergylabelerlib import (AzureEnergyLabeler,
                                    RESOURCE_GROUP_THRESHOLDS,
                                    TENANT_METRIC_EXPORT_TYPES)
 
-from yaspin import yaspin
-from .validators import ValidatePath, azure_subscription_id
+from .validators import (ValidatePath,
+                         azure_subscription_id,
+                         get_mutually_exclusive_args)
 
 
 __author__ = '''Sayantan Khanra <skhanra@schubergphilis.com>'''
@@ -82,13 +85,13 @@ def get_arguments():
                         action='store',
                         dest='logger_config',
                         help='The location of the logging config json file',
-                        default='')
+                        default=os.environ.get('AZURE_LABELER_LOG_CONFIG', ''))
     parser.add_argument('--log-level',
                         '-L',
                         help='Provide the log level. Defaults to info.',
                         dest='log_level',
                         action='store',
-                        default='info',
+                        default=os.environ.get('AZURE_LABELER_LOG_LEVEL', 'info'),
                         choices=['debug',
                                  'info',
                                  'warning',
@@ -97,8 +100,8 @@ def get_arguments():
     parser.add_argument('--tenant-id',
                         '-tid',
                         dest='tenant_id',
-                        required=True,
                         type=str,
+                        default=os.environ.get('AZURE_LABELER_TENANT_ID'),
                         help='The ID of the Tenant to labeled')
     single_subscription_action = parser.add_argument('--single-subscription-id',
                                                      '-s',
@@ -106,29 +109,30 @@ def get_arguments():
                                                      dest='single_subscription_id',
                                                      action='store',
                                                      type=azure_subscription_id,
+                                                     default=os.environ.get('AZURE_LABELER_SINGLE_SUBSCRIPTION_ID'),
                                                      help='Run the labeler on a single subscription.')
     parser.add_argument('--frameworks',
                         '-f',
-                        default=["Azure Security Benchmark"],
-                        nargs='*',
+                        default=os.environ.get('AZURE_LABELER_FRAMEWORKS', DEFAULT_DEFENDER_FOR_CLOUD_FRAMEWORKS),
+                        type=comma_delimited_list,
                         help='The list of applicable frameworks: \
-                                    ["Azure Security Benchmark", "SOC TSP", "Azure CIS 1.1.0"], '
+                                    ["Azure Security Benchmark", "Azure CIS 1.1.0"], '
                              'default=["Azure Security Benchmark"]')
     subscription_list = parser.add_mutually_exclusive_group()
     subscription_list._group_actions.append(single_subscription_action)  # pylint: disable=protected-access
     subscription_list.add_argument('--allowed-subscription-ids',
                                    '-a',
-                                   nargs='*',
-                                   default=None,
                                    required=False,
+                                   default=os.environ.get('AZURE_LABELER_ALLOWED_SUBSCRIPTION_IDS'),
+                                   type=comma_delimited_list,
                                    help='A list of Azure Subscription IDs for which an energy label will be produced. '
                                         'Mutually exclusive with '
                                         '--denied-subscription-ids and --single-subscription-id arguments.')
     subscription_list.add_argument('--denied-subscription-ids',
                                    '-d',
-                                   nargs='*',
-                                   default=None,
                                    required=False,
+                                   default=os.environ.get('AZURE_LABELER_DENIED_SUBSCRIPTION_IDS'),
+                                   type=comma_delimited_list,
                                    help='A list of Azure Subscription IDs that will '
                                         'be excluded from producing the energy label. '
                                         'Mutually exclusive with '
@@ -137,6 +141,7 @@ def get_arguments():
                         '-p',
                         action=ValidatePath,
                         required=False,
+                        default=os.environ.get('AZURE_LABELER_EXPORT_PATH'),
                         help='Exports a snapshot of chosen data in '
                              'JSON formatted files to the specified directory or Storage Account Container location.')
     export_options = parser.add_mutually_exclusive_group()
@@ -145,6 +150,7 @@ def get_arguments():
                                 action='store_const',
                                 dest='export_all',
                                 const=False,
+                                default=os.environ.get('AZURE_LABELER_EXPORT_METRICS'),
                                 help='Exports metrics/statistics along with findings data in '
                                      'JSON formatted files to the specified directory or '
                                      'Storage Account Container location.')
@@ -153,6 +159,7 @@ def get_arguments():
                                 action='store_const',
                                 dest='export_all',
                                 const=True,
+                                default=os.environ.get('AZURE_LABELER_EXPORT_ALL', True),
                                 help='Exports metrics/statistics without sensitive findings data in '
                                      'JSON formatted files to the specified directory or '
                                      'Storage Account Container location.')
@@ -161,11 +168,25 @@ def get_arguments():
                         dest='to_json',
                         action='store_true',
                         required=False,
-                        default=False,
+                        default=os.environ.get('AZURE_LABELER_TO_JSON', False),
                         help='Return the report in json format.')
     parser.set_defaults(export_all=True)
     args = parser.parse_args()
+    args.allowed_subscription_ids, args.denied_subscription_ids = get_mutually_exclusive_args(
+        args.allowed_subscription_ids,
+        args.denied_subscription_ids,
+        msg="conflicting arguments: --denied-subscription-ids, --allowed-subscription-ids")
+    args.tenant_id, _ = get_mutually_exclusive_args(
+        args.tenant_id,
+        None,
+        required=True,
+        msg="the following arguments are required: --tenant-id/-tid")
     return args
+
+
+def comma_delimited_list(argument, sep=','):
+    """Takes a str, splits based on character and returns a list."""
+    return argument.split(sep)
 
 
 def setup_logging(level, config_file=None):
@@ -222,10 +243,11 @@ def wait_for_findings(method_name, method_argument, log_level):
     return findings
 
 
-def get_tenant_reporting_data(tenant_id,
+def get_tenant_reporting_data(tenant_id,  # pylint: disable=too-many-arguments
                               allowed_subscription_ids,
                               denied_subscription_ids,
                               export_all_data_flag,
+                              frameworks,
                               log_level):
     """Gets the reporting data for a landing zone.
 
@@ -234,6 +256,7 @@ def get_tenant_reporting_data(tenant_id,
         allowed_subscription_ids: The allowed subscription ids for tenant inclusion if any.
         denied_subscription_ids: The denied subscription ids for tenant zone exclusion if any.
         export_all_data_flag: If set all data is going to be exported, else only basic reporting.
+        frameworks: The frameworks to include in scoring.
         log_level: The log level set.
 
     Returns:
@@ -244,7 +267,7 @@ def get_tenant_reporting_data(tenant_id,
                                  tenant_thresholds=TENANT_THRESHOLDS,
                                  resource_group_thresholds=RESOURCE_GROUP_THRESHOLDS,
                                  subscription_thresholds=SUBSCRIPTION_THRESHOLDS,
-                                 frameworks=DEFAULT_DEFENDER_FOR_CLOUD_FRAMEWORKS,
+                                 frameworks=frameworks,
                                  allowed_subscription_ids=allowed_subscription_ids,
                                  denied_subscription_ids=denied_subscription_ids)
     wait_for_findings(AzureEnergyLabeler.defender_for_cloud_findings.fget, labeler, log_level)
@@ -270,6 +293,7 @@ def get_subscription_reporting_data(
         tenant_id,
         subscription_id,
         export_all_data_flag,
+        frameworks,
         log_level):
     """Gets the reporting data for a single account.
 
@@ -277,6 +301,7 @@ def get_subscription_reporting_data(
         tenant_id: Tenant Id of the tenant
         subscription_id: The ID of the subscription to get reporting on.
         export_all_data_flag: If set all data is going to be exported, else only basic reporting.
+        frameworks: The frameworks to include in scoring.
         log_level: The log level set.
 
     Returns:
@@ -289,7 +314,7 @@ def get_subscription_reporting_data(
                                  tenant_thresholds=TENANT_THRESHOLDS,
                                  resource_group_thresholds=RESOURCE_GROUP_THRESHOLDS,
                                  subscription_thresholds=SUBSCRIPTION_THRESHOLDS,
-                                 frameworks=DEFAULT_DEFENDER_FOR_CLOUD_FRAMEWORKS,
+                                 frameworks=frameworks,
                                  allowed_subscription_ids=_allowed_subscription_ids)
     tenant = labeler.tenant
     defender_for_cloud_findings = wait_for_findings(AzureEnergyLabeler.defender_for_cloud_findings.fget,

@@ -38,6 +38,9 @@ from argparse import ArgumentTypeError
 from azureenergylabelerlib import (is_valid_subscription_id,
                                    DestinationPath)
 
+from .azureenergylabelercliexceptions import (MissingRequiredArguments,
+                                              MutuallyExclusiveArguments)
+
 
 __author__ = '''Sayantan Khanra <skhanra@schubergphilis.com>'''
 __docformat__ = '''google'''
@@ -78,3 +81,27 @@ def azure_subscription_id(subscription_id):
     if not is_valid_subscription_id(subscription_id):
         raise ArgumentTypeError(f'Subscription id {subscription_id} provided does not seem to be valid.')
     return subscription_id
+
+
+def get_mutually_exclusive_args(arg1, arg2, required=False, msg=None):
+    """Test if multiple mutually exclusive arguments are provided.
+
+    Args:
+        arg1 (Any): First argument to be checked
+        arg2 (Any): Second argument to be checked
+        required (bool, optional): Wether one argument is required. Defaults to False.
+        msg (str, optional): Error message shown to the user. Defaults to None.
+
+    Raises:
+        MutuallyExclusiveArguments: If both arguments were provided
+        MissingRequiredArguments: If `required` is True and no argument was provided
+
+    Returns:
+        arg1 and arg2 after validation
+
+    """
+    if arg1 and arg2:
+        raise MutuallyExclusiveArguments(arg1, arg2, msg)
+    if required and not (arg1 or arg2):
+        raise MissingRequiredArguments(msg)
+    return arg1, arg2
