@@ -40,7 +40,6 @@ import coloredlogs
 
 from yaspin import yaspin
 from azureenergylabelerlib import (AzureEnergyLabeler,
-                                   DEFAULT_DEFENDER_FOR_CLOUD_FRAMEWORKS,
                                    ALL_TENANT_EXPORT_TYPES,
                                    ALL_SUBSCRIPTION_EXPORT_DATA,
                                    SUBSCRIPTION_METRIC_EXPORT_TYPES,
@@ -113,7 +112,7 @@ def get_arguments():
                                                      help='Run the labeler on a single subscription.')
     parser.add_argument('--frameworks',
                         '-f',
-                        default=os.environ.get('AZURE_LABELER_FRAMEWORKS', DEFAULT_DEFENDER_FOR_CLOUD_FRAMEWORKS),
+                        default=os.environ.get('AZURE_LABELER_FRAMEWORKS', 'Azure Security Benchmark'),
                         type=comma_delimited_list,
                         help='The list of applicable frameworks: \
                                     ["Azure Security Benchmark", "Azure CIS 1.1.0"], '
