@@ -184,8 +184,9 @@ def get_arguments():
     return args
 
 
-def comma_delimited_list(argument):
-    return argument.split(',')
+def comma_delimited_list(argument, sep=','):
+    """Takes a str, splits based on character and returns a list."""
+    return argument.split(sep)
 
 
 def setup_logging(level, config_file=None):
