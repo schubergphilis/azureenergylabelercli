@@ -112,7 +112,7 @@ def get_arguments():
                                                      help='Run the labeler on a single subscription.')
     parser.add_argument('--frameworks',
                         '-f',
-                        default=os.environ.get('AZURE_LABELER_FRAMEWORKS', 'Azure Security Benchmark'),
+                        default=os.environ.get('AZURE_LABELER_FRAMEWORKS', ['Azure Security Benchmark']),
                         type=comma_delimited_list,
                         help='The list of applicable frameworks: \
                                     ["Azure Security Benchmark", "Azure CIS 1.1.0"], '
