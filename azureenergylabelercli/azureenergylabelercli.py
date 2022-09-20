@@ -136,7 +136,7 @@ def get_arguments():
                                    required=False,
                                    default=os.environ.get('AZURE_LABELER_DENIED_SUBSCRIPTION_IDS'),
                                    type=comma_delimited_list,
-                                   help=('A list of Azure Subscription IDs that will '
+                                   help=('A comma delimited list of Azure Subscription IDs that will '
                                          'be excluded from producing the energy label. '
                                          'Mutually exclusive with '
                                          '--allowed-subscription-ids and --single-subscription-id arguments.\n'
