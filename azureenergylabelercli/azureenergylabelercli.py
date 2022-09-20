@@ -114,9 +114,10 @@ def get_arguments():
                         '-f',
                         default=os.environ.get('AZURE_LABELER_FRAMEWORKS', ['Azure Security Benchmark']),
                         type=comma_delimited_list,
-                        help='The list of applicable frameworks: \
+                        help='The comma delimited list of applicable frameworks: \
                                     ["Azure Security Benchmark", "Azure CIS 1.1.0"], '
-                             'default=["Azure Security Benchmark"]')
+                             'default=["Azure Security Benchmark"]\n'
+                             'example="Azure Security Benchmark,Azure CIS 1.1.0"')
     subscription_list = parser.add_mutually_exclusive_group()
     subscription_list._group_actions.append(single_subscription_action)  # pylint: disable=protected-access
     subscription_list.add_argument('--allowed-subscription-ids',
@@ -124,9 +125,10 @@ def get_arguments():
                                    required=False,
                                    default=os.environ.get('AZURE_LABELER_ALLOWED_SUBSCRIPTION_IDS'),
                                    type=comma_delimited_list,
-                                   help='A list of Azure Subscription IDs for which an energy label will be produced. '
+                                   help='A comma delimited list of Azure Subscription IDs for which an energy label will be produced. '
                                         'Mutually exclusive with '
-                                        '--denied-subscription-ids and --single-subscription-id arguments.')
+                                        '--denied-subscription-ids and --single-subscription-id arguments.\n'
+                                        'example="00000000-0000-0000-0000-000000000000,00000000-0000-0000-0000-000000000001"')
     subscription_list.add_argument('--denied-subscription-ids',
                                    '-d',
                                    required=False,
@@ -135,7 +137,8 @@ def get_arguments():
                                    help='A list of Azure Subscription IDs that will '
                                         'be excluded from producing the energy label. '
                                         'Mutually exclusive with '
-                                        '--allowed-subscription-ids and --single-subscription-id arguments.')
+                                        '--allowed-subscription-ids and --single-subscription-id arguments.\n'
+                                        'example="00000000-0000-0000-0000-000000000000,00000000-0000-0000-0000-000000000001"')
     parser.add_argument('--export-path',
                         '-p',
                         action=ValidatePath,
