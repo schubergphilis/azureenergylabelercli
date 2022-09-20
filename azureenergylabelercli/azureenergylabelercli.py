@@ -125,20 +125,23 @@ def get_arguments():
                                    required=False,
                                    default=os.environ.get('AZURE_LABELER_ALLOWED_SUBSCRIPTION_IDS'),
                                    type=comma_delimited_list,
-                                   help='A comma delimited list of Azure Subscription IDs for which an energy label will be produced. '
-                                        'Mutually exclusive with '
-                                        '--denied-subscription-ids and --single-subscription-id arguments.\n'
-                                        'example="00000000-0000-0000-0000-000000000000,00000000-0000-0000-0000-000000000001"')
+                                   help=('A comma delimited list of Azure Subscription IDs'
+                                         ' for which an energy label will be produced. '
+                                         'Mutually exclusive with '
+                                         '--denied-subscription-ids and --single-subscription-id arguments.\n'
+                                         'example='
+                                         '"00000000-0000-0000-0000-000000000000,00000000-0000-0000-0000-000000000001"'))
     subscription_list.add_argument('--denied-subscription-ids',
                                    '-d',
                                    required=False,
                                    default=os.environ.get('AZURE_LABELER_DENIED_SUBSCRIPTION_IDS'),
                                    type=comma_delimited_list,
-                                   help='A list of Azure Subscription IDs that will '
-                                        'be excluded from producing the energy label. '
-                                        'Mutually exclusive with '
-                                        '--allowed-subscription-ids and --single-subscription-id arguments.\n'
-                                        'example="00000000-0000-0000-0000-000000000000,00000000-0000-0000-0000-000000000001"')
+                                   help=('A list of Azure Subscription IDs that will '
+                                         'be excluded from producing the energy label. '
+                                         'Mutually exclusive with '
+                                         '--allowed-subscription-ids and --single-subscription-id arguments.\n'
+                                         'example='
+                                         '"00000000-0000-0000-0000-000000000000,00000000-0000-0000-0000-000000000001"'))
     parser.add_argument('--export-path',
                         '-p',
                         action=ValidatePath,
