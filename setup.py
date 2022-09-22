@@ -20,7 +20,7 @@ except ImportError:
                          open('dev-requirements.txt').readlines()
                          if line.strip() and not line.startswith('#')]
 
-readme = open('README.rst').read()
+readme = open('README.md').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 version = open('.VERSION').read()
 

@@ -3,7 +3,7 @@ include AUTHORS.rst
 include CONTRIBUTING.rst
 include HISTORY.rst
 include LICENSE
-include README.rst
+include README.md
 include USAGE.rst
 include azure_energy_labeler_cli.py
 include Pipfile
