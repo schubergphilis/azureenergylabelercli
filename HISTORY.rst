@@ -21,3 +21,9 @@ History
 * Add support for environment variables as default argument value
 * Arguments with array of values changed from a space separated list to a comma separated list
 * CLI now uses the most recent version of the azureenergylabelerlib
+
+
+1.0.1 (26-09-2022)
+------------------
+
+* Fixed a bug preventing collection of resource group findings
