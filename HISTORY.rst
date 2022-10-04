@@ -27,3 +27,9 @@ History
 ------------------
 
 * Fixed a bug preventing collection of resource group findings
+
+
+1.1.0 (04-10-2022)
+------------------
+
+* Updated dependency azurenergylabelerlib to version 2.0.0
