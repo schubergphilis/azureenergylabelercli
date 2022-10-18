@@ -112,12 +112,12 @@ def get_arguments():
                                                      help='Run the labeler on a single subscription.')
     parser.add_argument('--frameworks',
                         '-f',
-                        default=os.environ.get('AZURE_LABELER_FRAMEWORKS', ['Azure Security Benchmark']),
+                        default=os.environ.get('AZURE_LABELER_FRAMEWORKS', ['Microsoft cloud security benchmark']),
                         type=comma_delimited_list,
                         help='The comma delimited list of applicable frameworks: \
-                                    ["Azure Security Benchmark", "Azure CIS 1.1.0"], '
-                             'default=["Azure Security Benchmark"]\n'
-                             'example="Azure Security Benchmark,Azure CIS 1.1.0"')
+                                    ["Microsoft cloud security benchmark", "Azure CIS 1.1.0"], '
+                             'default=["Microsoft cloud security benchmark"]\n'
+                             'example="Microsoft cloud security benchmark,Azure CIS 1.1.0"')
     subscription_list = parser.add_mutually_exclusive_group()
     subscription_list._group_actions.append(single_subscription_action)  # pylint: disable=protected-access
     subscription_list.add_argument('--allowed-subscription-ids',

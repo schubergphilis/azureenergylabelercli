@@ -31,7 +31,7 @@ Arguments
   "Path to export the results", "`--export-path`", "`AZURE_LABELER_EXPORT_PATH`", "`/local/path` or Storage Account Url with SAS token `https://sa.blob.windows.net/container/?sas_token`"
   "Export only number of findings and energy label", "`--export-metrics`", "`AZURE_LABELER_EXPORT_METRICS`", "`false` (default)"
   "Export all findings information along with energy label", "`--export-all`", "`AZURE_LABELER_EXPORT_ALL`", "`true` (default)"
-  "Regulatory frameworks to take into account", "`--frameworks`", "`AZURE_LABELER_FRAMEWORKS`", "`'Azure Security Benchmark,Azure CIS 1.1.0'`"
+  "Regulatory frameworks to take into account", "`--frameworks`", "`AZURE_LABELER_FRAMEWORKS`", "`'Microsoft cloud security benchmark,Azure CIS 1.1.0'`"
   "Explicit list of subscriptions to take into account", "`--allowed-subscription-ids`", "`AZURE_LABELER_TENANT_ID`", "`'00000000-0000-0000-0000-000000000000,00000000-0000-0000-0000-000000000001'`"
   "Explicit list of subscriptions NOT to take into account", "`--denied-subscription-ids`", "`AZURE_LABELER_DENIED_SUBSCRIPTION_IDS`", "`'00000000-0000-0000-0000-000000000000,00000000-0000-0000-0000-000000000001'`"
   "Level of log printing", "`--log-level`", "`AZURE_LABELER_LOG_LEVEL`", "`info`"
