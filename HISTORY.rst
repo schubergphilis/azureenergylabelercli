@@ -33,3 +33,9 @@ History
 ------------------
 
 * Updated dependency azurenergylabelerlib to version 2.0.0
+
+
+2.0.0 (19-10-2022)
+------------------
+
+* Microsoft renamed "Azure Security Benchmark" to "Microsoft cloud security benchmark", changing the interface
