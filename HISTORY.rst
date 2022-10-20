@@ -39,3 +39,9 @@ History
 ------------------
 
 * Microsoft renamed "Azure Security Benchmark" to "Microsoft cloud security benchmark", changing the interface
+
+
+2.0.1 (20-10-2022)
+------------------
+
+* Fix broken dependecies
