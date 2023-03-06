@@ -27,7 +27,7 @@
 Main code for validators.
 
 .. _Google Python Style Guide:
-   http://google.github.io/styleguide/pyguide.html
+   https://google.github.io/styleguide/pyguide.html
 """
 
 import argparse
@@ -58,7 +58,7 @@ LOGGER = logging.getLogger(LOGGER_BASENAME)
 LOGGER.addHandler(logging.NullHandler())
 
 
-class ValidatePath(argparse.Action):  # pylint: disable=too-few-public-methods
+class ValidatePath(argparse.Action):
     """Validates a given path."""
 
     def __init__(self, option_strings, dest, nargs=None, **kwargs):
