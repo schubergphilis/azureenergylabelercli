@@ -27,7 +27,7 @@
 Main code for azureenergylabelercli.
 
 .. _Google Python Style Guide:
-   http://google.github.io/styleguide/pyguide.html
+   https://google.github.io/styleguide/pyguide.html
 
 """
 
@@ -212,13 +212,13 @@ def setup_logging(level, config_file=None):
         # catching in case the file is not there and everything. Proper IO
         # handling is not shown here.
         try:
-            with open(config_file) as conf_file:
+            with open(config_file, encoding='utf-8') as conf_file:
                 configuration = json.loads(conf_file.read())
                 # Configure the logger
                 logging.config.dictConfig(configuration)
         except ValueError:
             print(f'File "{config_file}" is not valid json, cannot continue.')
-            raise SystemExit(1)
+            raise SystemExit(1) from None
     else:
         coloredlogs.install(level=level.upper())
 
@@ -244,7 +244,7 @@ def wait_for_findings(method_name, method_argument, log_level):
             findings = method_name(method_argument)
     except Exception as msg:
         LOGGER.error(msg)
-        raise SystemExit(1)
+        raise SystemExit(1) from None
     return findings
 
 
@@ -281,7 +281,7 @@ def get_tenant_reporting_data(tenant_id,  # pylint: disable=too-many-arguments
                    ['Tenant Percentage Coverage:', labeler.tenant_energy_label.coverage],
                    ['Labeled Subscriptions Measured:',
                     labeler.labeled_subscriptions_energy_label.subscriptions_measured]]
-    if not labeler.tenant_energy_label.best_label == labeler.tenant_energy_label.worst_label:
+    if labeler.tenant_energy_label.best_label != labeler.tenant_energy_label.worst_label:
         report_data.extend([['Best Subscription Security Score:', labeler.tenant_energy_label.best_label],
                             ['Worst Subscription Security Score:', labeler.tenant_energy_label.worst_label]])
     export_types = ALL_TENANT_EXPORT_TYPES if export_all_data_flag else TENANT_METRIC_EXPORT_TYPES

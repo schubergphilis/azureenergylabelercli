@@ -28,11 +28,11 @@ version = open('.VERSION').read()
 setup(
     name='''azureenergylabelercli''',
     version=version,
-    description='''A cli to help generate energy label for Azure tenant, subscriptions and resource groups. ''',
+    description='''A cli to help generate energy label for Azure tenant, subscriptions and resource groups.''',
     long_description=readme + '\n\n' + history,
     author='''Sayantan Khanra''',
     author_email='''skhanra@schubergphilis.com''',
-    url='''https://github.com/schubergphilis/azureenergylabelercli.git''',
+    url='''https://github.com/schubergphilis/azureenergylabelercli''',
     packages=find_packages(where='.', exclude=('tests', 'hooks', '_CI*')),
     package_dir={'''azureenergylabelercli''':
                  '''azureenergylabelercli'''},

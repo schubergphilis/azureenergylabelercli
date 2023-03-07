@@ -2,7 +2,7 @@
 azureenergylabelercli
 =====================
 
-A cli to help generate energy label for Azure tenant, subscriptions and resource groups. 
+A cli to help generate energy label for Azure tenant, subscriptions and resource groups.
 
 
 * Documentation: https://azureenergylabelercli.readthedocs.org/en/latest
@@ -47,19 +47,19 @@ Azure CLI
 If you are running the Energy Labeler from your local machine, make sure the user you are authenticated as has the `Security Reader` permission or higher.
 
 .. code-block:: bash
- 
+
   az login --tenant 00000000-0000-0000-0000-000000000000
 
 Managed Identity
 ----------------
 
-If you are running the `azureenergylabeler` container in Azure (on ACI, ACA, etc), this is safest and preferred authentication method. 
+If you are running the `azureenergylabeler` container in Azure (on ACI, ACA, etc), this is safest and preferred authentication method.
 To make use of Managed Identity authentication for the Energy Labeler, make sure it is enabled on your instance (ACI, Function App, etc):
 .. code-block::
 
   identity: {
       type: 'SystemAssigned'
-          
+
   }
 
 
@@ -68,7 +68,7 @@ Also make sure you have a role assignment to your instance, `Security Reader` is
 
   @description('Security Reader role definition')
   var roleDefinitionId = resourceId('microsoft.authorization/roleDefinitions', '39bc4728-0917-49c7-9d2c-d95423bc2eb4')
-  
+
   @description('Assign Security Reader role to the container so it can gather security compliance of the subscription/tenant')
   resource securityReaderAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
     name: guid(name)

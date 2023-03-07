@@ -19,6 +19,7 @@
             "formatter": "simple",
             "filename": "/var/log/azureenergylabelercli.log",
             "maxBytes": "10485760",
+            "backupCount": "10",
             "encoding": "utf8"
         }
     },

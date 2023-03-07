@@ -27,7 +27,7 @@
 Main code for azure_energy_labeler_cli.
 
 .. _Google Python Style Guide:
-   http://google.github.io/styleguide/pyguide.html
+   https://google.github.io/styleguide/pyguide.html
 
 """
 
@@ -100,7 +100,7 @@ def main():
         report(report_data, args.to_json)
     except Exception as msg:
         LOGGER.error(msg)
-        raise SystemExit(1)
+        raise SystemExit(1) from None
     raise SystemExit(0)
 
 
