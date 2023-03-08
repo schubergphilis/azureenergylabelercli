@@ -45,3 +45,9 @@ History
 ------------------
 
 * Fix broken dependecies
+
+
+2.0.2 (08-03-2023)
+------------------
+
+* Bump template and dependencies.
