@@ -4,8 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
-
-
 sphinx = ">=6.0,<7.0"
 sphinx-rtd-theme = ">=1.0,<2.0"
 prospector = ">=1.8,<2.0"
@@ -22,10 +20,9 @@ coloredlogs = ">=15.0,<16.0"
 emoji = ">=2.0,<3.0"
 toml = ">=0.1,<1.0"
 
-
 [packages]
 coloredlogs = "~=15.0.1"
-azureenergylabelerlib = "~=3.1.0"
+azureenergylabelerlib = "~=3.1.1"
 yaspin = "~=2.3.0"
 terminaltables = "~=3.1.10"
 art = "~=5.8"
