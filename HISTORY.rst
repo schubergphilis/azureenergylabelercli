@@ -51,3 +51,9 @@ History
 ------------------
 
 * Bump template and dependencies.
+
+
+2.0.3 (21-03-2023)
+------------------
+
+* Bumped library version which now filters subscriptions based on the tenant_id.
