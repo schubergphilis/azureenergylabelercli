@@ -275,7 +275,7 @@ def get_tenant_reporting_data(tenant_id,  # pylint: disable=too-many-arguments
                                  frameworks=frameworks,
                                  allowed_subscription_ids=allowed_subscription_ids,
                                  denied_subscription_ids=denied_subscription_ids)
-    wait_for_findings(AzureEnergyLabeler.defender_for_cloud_findings.fget, labeler, log_level)
+    wait_for_findings(AzureEnergyLabeler.filtered_defender_for_cloud_findings.fget, labeler, log_level)
     report_data = [['Tenant ID:', tenant_id],
                    ['Tenant Security Score:', labeler.tenant_energy_label.label],
                    ['Tenant Percentage Coverage:', labeler.tenant_energy_label.coverage],
@@ -322,7 +322,7 @@ def get_subscription_reporting_data(
                                  frameworks=frameworks,
                                  allowed_subscription_ids=_allowed_subscription_ids)
     tenant = labeler.tenant
-    defender_for_cloud_findings = wait_for_findings(AzureEnergyLabeler.defender_for_cloud_findings.fget,
+    defender_for_cloud_findings = wait_for_findings(AzureEnergyLabeler.filtered_defender_for_cloud_findings.fget,
                                                     labeler,
                                                     log_level)
     subscription = next(
