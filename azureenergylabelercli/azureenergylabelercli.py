@@ -178,12 +178,12 @@ def get_arguments():
     parser.add_argument('--disable-spinner',
                         '-ds',
                         action='store_true',
-                        default=os.environ.get('AWS_LABELER_DISABLE_SPINNER', False),
+                        default=os.environ.get('AZURE_LABELER_DISABLE_SPINNER', False),
                         help='If set spinner will be disabled on the CLI.')
     parser.add_argument('--disable-banner',
                         '-db',
                         action='store_true',
-                        default=os.environ.get('AWS_LABELER_DISABLE_BANNER', False),
+                        default=os.environ.get('AZURE_LABELER_DISABLE_BANNER', False),
                         help='If set banner will be disabled on the CLI.')
     parser.set_defaults(export_all=True)
     args = parser.parse_args()
