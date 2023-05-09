@@ -175,6 +175,16 @@ def get_arguments():
                         required=False,
                         default=os.environ.get('AZURE_LABELER_TO_JSON', False),
                         help='Return the report in json format.')
+    parser.add_argument('--disable-spinner',
+                        '-ds',
+                        action='store_true',
+                        default=os.environ.get('AWS_LABELER_DISABLE_SPINNER', False),
+                        help='If set spinner will be disabled on the CLI.')
+    parser.add_argument('--disable-banner',
+                        '-db',
+                        action='store_true',
+                        default=os.environ.get('AWS_LABELER_DISABLE_BANNER', False),
+                        help='If set banner will be disabled on the CLI.')
     parser.set_defaults(export_all=True)
     args = parser.parse_args()
     args.allowed_subscription_ids, args.denied_subscription_ids = get_mutually_exclusive_args(
@@ -223,20 +233,21 @@ def setup_logging(level, config_file=None):
         coloredlogs.install(level=level.upper())
 
 
-def wait_for_findings(method_name, method_argument, log_level):
+def wait_for_findings(method_name, method_argument, log_level, disable_spinner=False):
     """If log level is not debug shows a spinner while the callable provided gets security hub findings.
 
     Args:
         method_name: The method to execute while waiting.
         method_argument: The argument to pass to the method.
         log_level: The log level as set by the user.
+        disable_spinner: The spinner will be disabled while retrieving the findings.
 
     Returns:
         findings: A list of defender for cloud findings as retrieved by the callable.
 
     """
     try:
-        if not log_level == 'debug':
+        if all([log_level != 'debug', not disable_spinner]):
             with yaspin(text="Please wait while retrieving Defender For Cloud findings...", color="yellow") as spinner:
                 findings = method_name(method_argument)
             spinner.ok("✅")
@@ -253,7 +264,8 @@ def get_tenant_reporting_data(tenant_id,  # pylint: disable=too-many-arguments
                               denied_subscription_ids,
                               export_all_data_flag,
                               frameworks,
-                              log_level):
+                              log_level,
+                              disable_spinner):
     """Gets the reporting data for a landing zone.
 
     Args:
@@ -263,6 +275,8 @@ def get_tenant_reporting_data(tenant_id,  # pylint: disable=too-many-arguments
         export_all_data_flag: If set all data is going to be exported, else only basic reporting.
         frameworks: The frameworks to include in scoring.
         log_level: The log level set.
+        disable_spinner: The spinner will be disabled while retrieving the findings.
+
 
     Returns:
         report_data, exporter_arguments
@@ -275,7 +289,8 @@ def get_tenant_reporting_data(tenant_id,  # pylint: disable=too-many-arguments
                                  frameworks=frameworks,
                                  allowed_subscription_ids=allowed_subscription_ids,
                                  denied_subscription_ids=denied_subscription_ids)
-    wait_for_findings(AzureEnergyLabeler.filtered_defender_for_cloud_findings.fget, labeler, log_level)
+    wait_for_findings(AzureEnergyLabeler.filtered_defender_for_cloud_findings.fget,
+                      labeler, log_level, disable_spinner=disable_spinner)
     report_data = [['Tenant ID:', tenant_id],
                    ['Tenant Security Score:', labeler.tenant_energy_label.label],
                    ['Tenant Percentage Coverage:', labeler.tenant_energy_label.coverage],
@@ -288,7 +303,7 @@ def get_tenant_reporting_data(tenant_id,  # pylint: disable=too-many-arguments
     exporter_arguments = {'export_types': export_types,
                           'id': tenant_id,
                           'energy_label': labeler.tenant_energy_label.label,
-                          'defender_for_cloud_findings': labeler.defender_for_cloud_findings,
+                          'defender_for_cloud_findings': labeler.filtered_defender_for_cloud_findings,
                           'labeled_subscriptions': labeler.tenant_labeled_subscriptions,
                           'credentials': labeler.tenant_credentials}
     return report_data, exporter_arguments
@@ -299,7 +314,8 @@ def get_subscription_reporting_data(
         subscription_id,
         export_all_data_flag,
         frameworks,
-        log_level):
+        log_level,
+        disable_spinner):
     """Gets the reporting data for a single account.
 
     Args:
@@ -308,6 +324,8 @@ def get_subscription_reporting_data(
         export_all_data_flag: If set all data is going to be exported, else only basic reporting.
         frameworks: The frameworks to include in scoring.
         log_level: The log level set.
+        disable_spinner: The spinner will be disabled while retrieving the findings.
+
 
     Returns:
         report_data, exporter_arguments
@@ -324,7 +342,8 @@ def get_subscription_reporting_data(
     tenant = labeler.tenant
     defender_for_cloud_findings = wait_for_findings(AzureEnergyLabeler.filtered_defender_for_cloud_findings.fget,
                                                     labeler,
-                                                    log_level)
+                                                    log_level,
+                                                    disable_spinner=disable_spinner)
     subscription = next(
         subscription for subscription in tenant.subscriptions if subscription.subscription_id == subscription_id)
     energy_label = subscription.get_energy_label(defender_for_cloud_findings)
@@ -340,7 +359,7 @@ def get_subscription_reporting_data(
     exporter_arguments = {'export_types': export_types,
                           'id': subscription.subscription_id,
                           'energy_label': energy_label.label,
-                          'defender_for_cloud_findings': defender_for_cloud_findings,
-                          'labeled_subscriptions': subscription,
+                          'defender_for_cloud_findings': subscription.get_open_findings(defender_for_cloud_findings),
+                          'labeled_subscriptions': [subscription],
                           'credentials': labeler.tenant_credentials}
     return report_data, exporter_arguments

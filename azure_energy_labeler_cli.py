@@ -61,7 +61,8 @@ def _get_reporting_arguments(args):
     method_arguments = {'export_all_data_flag': args.export_all,
                         'tenant_id': args.tenant_id,
                         'frameworks': args.frameworks,
-                        'log_level': args.log_level}
+                        'log_level': args.log_level,
+                        'disable_spinner': args.disable_spinner}
     if args.single_subscription_id:
         get_reporting_data = get_subscription_reporting_data
         method_arguments.update({'subscription_id': args.single_subscription_id})
@@ -91,7 +92,8 @@ def main():
     setup_logging(args.log_level, args.logger_config)
     logging.getLogger('botocore').setLevel(logging.ERROR)
     try:
-        print(text2art("Azure Energy Labeler"))
+        if not args.disable_banner:
+            print(text2art("Azure Energy Labeler"))
         report_data, exporter_arguments = _get_reporting_arguments(args)
         if args.export_path:
             LOGGER.info(f'Trying to export data to the requested path : {args.export_path}')
