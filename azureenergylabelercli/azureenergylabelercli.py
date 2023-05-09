@@ -309,7 +309,7 @@ def get_tenant_reporting_data(tenant_id,  # pylint: disable=too-many-arguments
     return report_data, exporter_arguments
 
 
-def get_subscription_reporting_data(
+def get_subscription_reporting_data(  # pylint: disable=too-many-arguments
         tenant_id,
         subscription_id,
         export_all_data_flag,
