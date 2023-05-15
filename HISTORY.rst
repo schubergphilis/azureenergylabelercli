@@ -57,3 +57,10 @@ History
 ------------------
 
 * Bumped library version which now filters subscriptions based on the tenant_id.
+
+
+2.1.0 (15-05-2023)
+------------------
+
+* Added option to disable banner and spinner
+* Improved filtering of findings
