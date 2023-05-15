@@ -344,6 +344,8 @@ def get_subscription_reporting_data(  # pylint: disable=too-many-arguments
                                                     labeler,
                                                     log_level,
                                                     disable_spinner=disable_spinner)
+    filtered_findings = [finding for finding in defender_for_cloud_findings
+                         if finding.subscription_id == subscription_id]
     subscription = next(
         subscription for subscription in tenant.subscriptions if subscription.subscription_id == subscription_id)
     energy_label = subscription.get_energy_label(defender_for_cloud_findings)
@@ -359,7 +361,7 @@ def get_subscription_reporting_data(  # pylint: disable=too-many-arguments
     exporter_arguments = {'export_types': export_types,
                           'id': subscription.subscription_id,
                           'energy_label': energy_label.label,
-                          'defender_for_cloud_findings': subscription.get_open_findings(defender_for_cloud_findings),
+                          'defender_for_cloud_findings': filtered_findings,
                           'labeled_subscriptions': [subscription],
                           'credentials': labeler.tenant_credentials}
     return report_data, exporter_arguments
