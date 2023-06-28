@@ -64,3 +64,9 @@ History
 
 * Added option to disable banner and spinner
 * Improved filtering of findings
+
+
+2.1.1 (28-06-2023)
+------------------
+
+* Updated library dependency
