@@ -69,7 +69,8 @@ def _get_reporting_arguments(args):
     else:
         get_reporting_data = get_tenant_reporting_data
         method_arguments.update({'allowed_subscription_ids': args.allowed_subscription_ids,
-                                 'denied_subscription_ids': args.denied_subscription_ids})
+                                 'denied_subscription_ids': args.denied_subscription_ids,
+                                 'denied_resource_group_names': args.denied_resource_group_names,})
     return get_reporting_data(**method_arguments)
 
 
