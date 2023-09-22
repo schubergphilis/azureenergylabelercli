@@ -88,3 +88,9 @@ History
 ------------------
 
 * fix: the list syntax in the readme file broke the release. It expects a comma after a quote.
+
+
+2.2.3 (22-09-2023)
+------------------
+
+* fix: the list syntax in the readme file broke the release. It expects a comma after a quote.
