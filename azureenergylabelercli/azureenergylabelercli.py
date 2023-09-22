@@ -147,10 +147,10 @@ def get_arguments():
                                    required=False,
                                    default=os.environ.get('AZURE_LABELER_DENIED_RESOURCE_GROUP_NAMES'),
                                    type=comma_delimited_list,
-                                   help=('A list of Azure resource group names that will '
+                                   help=('A comma delimited list of Azure resource group names that will '
                                          'be excluded from producing the energy label.'
                                          'example='
-                                         '["SBPP-WEU-AARC-01-RSG", "SBPA-WEU-AARC-01-RSG"]'))
+                                         '"SBPP-WEU-AARC-01-RSG, SBPA-WEU-AARC-01-RSG"'))
     parser.add_argument('--export-path',
                         '-p',
                         action=ValidatePath,
