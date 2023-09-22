@@ -70,3 +70,9 @@ History
 ------------------
 
 * Updated library dependency
+
+
+2.2.0 (22-09-2023)
+------------------
+
+* feat: updating azureenergylabelerlib to 3.3.0 to allow excluding resource groups
