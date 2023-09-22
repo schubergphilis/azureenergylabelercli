@@ -34,7 +34,7 @@ Arguments
   "Regulatory frameworks to take into account", "`--frameworks`", "`AZURE_LABELER_FRAMEWORKS`", "`'Microsoft cloud security benchmark,Azure CIS 1.1.0'`"
   "Explicit list of subscriptions to take into account", "`--allowed-subscription-ids`", "`AZURE_LABELER_ALLOWED_SUBSCRIPTION_IDS`", "`'00000000-0000-0000-0000-000000000000,00000000-0000-0000-0000-000000000001'`"
   "Explicit list of subscriptions NOT to take into account", "`--denied-subscription-ids`", "`AZURE_LABELER_DENIED_SUBSCRIPTION_IDS`", "`'00000000-0000-0000-0000-000000000000,00000000-0000-0000-0000-000000000001'`"
-  "List of resource groups to exclude", "`--denied-resource-group-names`", "`AZURE_LABELER_DENIED_RESOURCE_GROUP_NAMES`", "`["SBPP-WEU-AARC-01-RSG", "SBPA-WEU-AARC-01-RSG"]`"
+  "List of resource groups to exclude", "`--denied-resource-group-names`", "`AZURE_LABELER_DENIED_RESOURCE_GROUP_NAMES`", "`'SBPP-WEU-AARC-01-RSG, SBPA-WEU-AARC-01-RSG'`"
   "Level of log printing", "`--log-level`", "`AZURE_LABELER_LOG_LEVEL`", "`info`"
   "Logging configuration", "`--log-config`", "`AZURE_LABELER_LOG_CONFIG`", ""
 
