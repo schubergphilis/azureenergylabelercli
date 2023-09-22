@@ -142,6 +142,15 @@ def get_arguments():
                                          '--allowed-subscription-ids and --single-subscription-id arguments.\n'
                                          'example='
                                          '"00000000-0000-0000-0000-000000000000,00000000-0000-0000-0000-000000000001"'))
+    subscription_list.add_argument('--denied-resource-group-names',
+                                   '-e',
+                                   required=False,
+                                   default=os.environ.get('AZURE_LABELER_DENIED_RESOURCE_GROUP_NAMES'),
+                                   type=comma_delimited_list,
+                                   help=('A list of Azure resource group names that will '
+                                         'be excluded from producing the energy label.'
+                                         'example='
+                                         '["SBPP-WEU-AARC-01-RSG", "SBPA-WEU-AARC-01-RSG"]'))
     parser.add_argument('--export-path',
                         '-p',
                         action=ValidatePath,
@@ -262,6 +271,7 @@ def wait_for_findings(method_name, method_argument, log_level, disable_spinner=F
 def get_tenant_reporting_data(tenant_id,  # pylint: disable=too-many-arguments
                               allowed_subscription_ids,
                               denied_subscription_ids,
+                              denied_resource_group_names,
                               export_all_data_flag,
                               frameworks,
                               log_level,
@@ -272,6 +282,7 @@ def get_tenant_reporting_data(tenant_id,  # pylint: disable=too-many-arguments
         tenant_id: Tenant Id of the tenant
         allowed_subscription_ids: The allowed subscription ids for tenant inclusion if any.
         denied_subscription_ids: The denied subscription ids for tenant zone exclusion if any.
+        denied_resource_group_names: List of resource groups to exclude if any.
         export_all_data_flag: If set all data is going to be exported, else only basic reporting.
         frameworks: The frameworks to include in scoring.
         log_level: The log level set.
@@ -288,7 +299,8 @@ def get_tenant_reporting_data(tenant_id,  # pylint: disable=too-many-arguments
                                  subscription_thresholds=SUBSCRIPTION_THRESHOLDS,
                                  frameworks=frameworks,
                                  allowed_subscription_ids=allowed_subscription_ids,
-                                 denied_subscription_ids=denied_subscription_ids)
+                                 denied_subscription_ids=denied_subscription_ids,
+                                 denied_resource_group_names=denied_resource_group_names)
     wait_for_findings(AzureEnergyLabeler.filtered_defender_for_cloud_findings.fget,
                       labeler, log_level, disable_spinner=disable_spinner)
     report_data = [['Tenant ID:', tenant_id],

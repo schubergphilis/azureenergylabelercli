@@ -22,7 +22,7 @@ toml = ">=0.1,<1.0"
 
 [packages]
 coloredlogs = "~=15.0.1"
-azureenergylabelerlib = "~=3.2.1"
+azureenergylabelerlib = "==3.3.0"
 yaspin = "~=2.3.0"
 terminaltables = "~=3.1.10"
 art = "~=5.8"
