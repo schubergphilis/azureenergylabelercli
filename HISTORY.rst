@@ -82,3 +82,9 @@ History
 ------------------
 
 * Fix: AZURE_LABELER_DENIED_RESOURCE_GROUP_NAMES changed to a string delimited list due to gitlab-ci not supporting variables of the type list.
+
+
+2.2.2 (22-09-2023)
+------------------
+
+* fix: the list syntax in the readme file broke the release. It expects a comma after a quote.
