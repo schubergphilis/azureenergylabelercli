@@ -76,3 +76,9 @@ History
 ------------------
 
 * feat: updating azureenergylabelerlib to 3.3.0 to allow excluding resource groups
+
+
+2.2.1 (22-09-2023)
+------------------
+
+* Fix: AZURE_LABELER_DENIED_RESOURCE_GROUP_NAMES changed to a string delimited list due to gitlab-ci not supporting variables of the type list.
