@@ -38,6 +38,7 @@ import argparse
 import os
 import coloredlogs
 
+from yaspin import yaspin
 from azureenergylabelerlib import (AzureEnergyLabeler,
                                    ALL_TENANT_EXPORT_TYPES,
                                    ALL_SUBSCRIPTION_EXPORT_DATA,
@@ -46,7 +47,6 @@ from azureenergylabelerlib import (AzureEnergyLabeler,
                                    SUBSCRIPTION_THRESHOLDS,
                                    RESOURCE_GROUP_THRESHOLDS,
                                    TENANT_METRIC_EXPORT_TYPES)
-from yaspin import yaspin
 
 from .validators import (ValidatePath,
                          azure_subscription_id,
