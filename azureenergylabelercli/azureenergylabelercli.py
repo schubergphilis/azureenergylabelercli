@@ -38,7 +38,6 @@ import argparse
 import os
 import coloredlogs
 
-from yaspin import yaspin
 from azureenergylabelerlib import (AzureEnergyLabeler,
                                    ALL_TENANT_EXPORT_TYPES,
                                    ALL_SUBSCRIPTION_EXPORT_DATA,
@@ -255,16 +254,18 @@ def wait_for_findings(method_name, method_argument, log_level, disable_spinner=F
         findings: A list of defender for cloud findings as retrieved by the callable.
 
     """
-    try:
-        if all([log_level != 'debug', not disable_spinner]):
-            with yaspin(text="Please wait while retrieving Defender For Cloud findings...", color="yellow") as spinner:
-                findings = method_name(method_argument)
-            spinner.ok("✅")
-        else:
-            findings = method_name(method_argument)
-    except Exception as msg:
-        LOGGER.error(msg)
-        raise SystemExit(1) from None
+    print(method_name)
+    # try:
+    if all([log_level != 'debug', not disable_spinner]):
+        # with yaspin(text="Please wait while retrieving Defender For Cloud findings...", color="yellow") as spinner:
+        print(method_argument)
+        findings = method_name(method_argument)
+        # spinner.ok("✅")
+    else:
+        findings = method_name(method_argument)
+    # except Exception as msg:
+    #     LOGGER.error(msg)
+    #     raise SystemExit(1) from None
     return findings
 
 
