@@ -94,3 +94,9 @@ History
 ------------------
 
 * fix: the list syntax in the readme file broke the release. It expects a comma after a quote.
+
+
+2.2.4 (03-10-2023)
+------------------
+
+* fix: denied_resource_group_names was optional in azureenergylabelerlib 3.3.0. This broke the code if no value was given, therefore updating to 3.3.1.
