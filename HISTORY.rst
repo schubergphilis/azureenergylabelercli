@@ -100,3 +100,9 @@ History
 ------------------
 
 * fix: denied_resource_group_names was optional in azureenergylabelerlib 3.3.0. This broke the code if no value was given, therefore updating to 3.3.1.
+
+
+2.2.5 (05-10-2023)
+------------------
+
+* feat: added validation for azure resource group names in azureenergylaberlib 3.3.2
