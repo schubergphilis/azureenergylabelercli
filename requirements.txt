@@ -8,7 +8,7 @@
 # Please use Pipfile to update the requirements.
 #
 coloredlogs~=15.0.1 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
-azureenergylabelerlib==3.3.2
+azureenergylabelerlib==3.3.3
 yaspin~=2.3.0 ; python_full_version >= '3.7.2' and python_full_version < '4.0.0'
 terminaltables~=3.1.10 ; python_version >= '2.6'
 art~=5.9 ; python_version >= '2.7'
