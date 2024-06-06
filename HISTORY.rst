@@ -106,3 +106,9 @@ History
 ------------------
 
 * feat: added validation for azure resource group names in azureenergylaberlib 3.3.2
+
+
+2.2.7 (06-06-2024)
+------------------
+
+* Bump dependencies.
