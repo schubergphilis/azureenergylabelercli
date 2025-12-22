@@ -15,6 +15,7 @@
 import sys
 import os
 import sphinx_rtd_theme
+from pathlib import Path
 
 # If extensions (or modules to document with autodoc) are in another
 # directory, add these directories to sys.path here. If the directory is
@@ -23,19 +24,19 @@ import sphinx_rtd_theme
 #sys.path.insert(0, os.path.abspath('.'))
 
 # Get the project root dir, which is the parent dir of this
-cwd = os.getcwd()
-project_root = os.path.dirname(cwd)
+cwd = Path.cwd()
+project_root = cwd.parent
 
 # Run apidoc to traverse the project directory and add all modules to the docs
 import sphinx.ext.apidoc
 
-sphinx.ext.apidoc.main(argv=["-f", "-o", os.path.join(project_root, "docs"),
-                             os.path.join(project_root, """azureenergylabelercli""")])
+sphinx.ext.apidoc.main(["-f", "-o", str(project_root / "docs"),
+                        str(project_root / "azureenergylabelercli")])
 
 # Insert the project root dir as the first element in the PYTHONPATH.
 # This lets us ensure that the source package is imported, and that its
 # version is used.
-sys.path.insert(0, project_root)
+sys.path.insert(0, str(project_root))
 
 import azureenergylabelercli
 
