@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # File: _version.py
 #
 # Copyright 2022 Sayantan Khanra
@@ -31,35 +29,22 @@ Manages the version of the package.
 
 """
 
-import os
+from pathlib import Path
 
-__author__ = '''Sayantan Khanra <skhanra@schubergphilis.com>'''
-__docformat__ = '''google'''
-__date__ = '''04-05-2022'''
-__copyright__ = '''Copyright 2022, Sayantan Khanra'''
-__license__ = '''MIT'''
-__maintainer__ = '''Sayantan Khanra'''
-__email__ = '''<skhanra@schubergphilis.com>'''
-__status__ = '''Development'''  # "Prototype", "Development", "Production".
+__author__ = """Sayantan Khanra <skhanra@schubergphilis.com>"""
+__docformat__ = """google"""
+__date__ = """04-05-2022"""
+__copyright__ = """Copyright 2022, Sayantan Khanra"""
+__license__ = """MIT"""
+__maintainer__ = """Sayantan Khanra"""
+__email__ = """<skhanra@schubergphilis.com>"""
+__status__ = """Development"""  # "Prototype", "Development", "Production".
 
-VERSION_FILE_PATH = os.path.abspath(
-    os.path.join(
-        os.path.dirname(__file__),
-        '..',
-        '.VERSION'
-    )
-)
+VERSION_FILE_PATH = (Path(__file__).parent.parent / ".VERSION").resolve()
 
-LOCAL_VERSION_FILE_PATH = os.path.abspath(
-    os.path.join(
-        os.path.dirname(__file__),
-        '.VERSION'
-    )
-)
+LOCAL_VERSION_FILE_PATH = (Path(__file__).parent / ".VERSION").resolve()
 
 try:
-    with open(VERSION_FILE_PATH, encoding='utf-8') as f:
-        __version__ = f.read()
-except IOError:
-    with open(LOCAL_VERSION_FILE_PATH, encoding='utf-8') as f:
-        __version__ = f.read()
+    __version__ = VERSION_FILE_PATH.read_text(encoding="utf-8")
+except OSError:
+    __version__ = LOCAL_VERSION_FILE_PATH.read_text(encoding="utf-8")

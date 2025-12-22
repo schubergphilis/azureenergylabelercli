@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # File: __init__.py
 #
 # Copyright 2022 Sayantan Khanra
@@ -37,19 +36,19 @@ from .azureenergylabelercli import (get_arguments,
                                     get_tenant_reporting_data,
                                     get_subscription_reporting_data)
 
-__author__ = '''Sayantan Khanra <skhanra@schubergphilis.com>'''
-__docformat__ = '''google'''
-__date__ = '''04-05-2022'''
-__copyright__ = '''Copyright 2022, Sayantan Khanra'''
-__license__ = '''MIT'''
-__maintainer__ = '''Sayantan Khanra'''
-__email__ = '''<skhanra@schubergphilis.com>'''
-__status__ = '''Development'''  # "Prototype", "Development", "Production".
+__author__ = """Sayantan Khanra <skhanra@schubergphilis.com>"""
+__docformat__ = """google"""
+__date__ = """04-05-2022"""
+__copyright__ = """Copyright 2022, Sayantan Khanra"""
+__license__ = """MIT"""
+__maintainer__ = """Sayantan Khanra"""
+__email__ = """<skhanra@schubergphilis.com>"""
+__status__ = """Development"""  # "Prototype", "Development", "Production".
 
-# This is to 'use' the module(s), so lint doesn't complain
-assert __version__
-
-assert get_arguments
-assert setup_logging
-assert get_tenant_reporting_data
-assert get_subscription_reporting_data
+__all__ = [
+                                    "__version__",
+                                    "get_arguments",
+                                    "get_subscription_reporting_data",
+                                    "get_tenant_reporting_data",
+                                    "setup_logging",
+]

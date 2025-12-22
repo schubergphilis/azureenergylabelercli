@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # File: azureenergylabelercli.py
 #
 # Copyright 2022 Sayantan Khanra
@@ -31,12 +30,14 @@ Main code for azureenergylabelercli.
 
 """
 
+import sys
 import logging
 import logging.config
 import json
 import argparse
 import os
 import coloredlogs
+from pathlib import Path
 
 from yaspin import yaspin
 from azureenergylabelerlib import (AzureEnergyLabeler,
@@ -53,19 +54,19 @@ from .validators import (ValidatePath,
                          get_mutually_exclusive_args)
 
 
-__author__ = '''Sayantan Khanra <skhanra@schubergphilis.com>'''
-__docformat__ = '''google'''
-__date__ = '''04-05-2022'''
-__copyright__ = '''Copyright 2022, Sayantan Khanra'''
+__author__ = """Sayantan Khanra <skhanra@schubergphilis.com>"""
+__docformat__ = """google"""
+__date__ = """04-05-2022"""
+__copyright__ = """Copyright 2022, Sayantan Khanra"""
 __credits__ = ["Sayantan Khanra"]
-__license__ = '''MIT'''
-__maintainer__ = '''Sayantan Khanra'''
-__email__ = '''<skhanra@schubergphilis.com>'''
-__status__ = '''Development'''  # "Prototype", "Development", "Production".
+__license__ = """MIT"""
+__maintainer__ = """Sayantan Khanra"""
+__email__ = """<skhanra@schubergphilis.com>"""
+__status__ = """Development"""  # "Prototype", "Development", "Production".
 
 
 # This is the main prefix used for logging
-LOGGER_BASENAME = '''azureenergylabelercli'''
+LOGGER_BASENAME = """azureenergylabelercli"""
 LOGGER = logging.getLogger(LOGGER_BASENAME)
 LOGGER.addHandler(logging.NullHandler())
 
@@ -77,53 +78,53 @@ def get_arguments():
     Returns the args as parsed from the argsparser.
     """
     # https://docs.python.org/3/library/argparse.html
-    parser = argparse.ArgumentParser(description='''A cli to help generate energy label for
-    Azure tenant, subscriptions and resource groups. ''')
-    parser.add_argument('--log-config',
-                        '-l',
-                        action='store',
-                        dest='logger_config',
-                        help='The location of the logging config json file',
-                        default=os.environ.get('AZURE_LABELER_LOG_CONFIG', ''))
-    parser.add_argument('--log-level',
-                        '-L',
-                        help='Provide the log level. Defaults to info.',
-                        dest='log_level',
-                        action='store',
-                        default=os.environ.get('AZURE_LABELER_LOG_LEVEL', 'info'),
-                        choices=['debug',
-                                 'info',
-                                 'warning',
-                                 'error',
-                                 'critical'])
-    parser.add_argument('--tenant-id',
-                        '-tid',
-                        dest='tenant_id',
+    parser = argparse.ArgumentParser(description="""A cli to help generate energy label for
+    Azure tenant, subscriptions and resource groups. """)
+    parser.add_argument("--log-config",
+                        "-l",
+                        action="store",
+                        dest="logger_config",
+                        help="The location of the logging config json file",
+                        default=os.environ.get("AZURE_LABELER_LOG_CONFIG", ""))
+    parser.add_argument("--log-level",
+                        "-L",
+                        help="Provide the log level. Defaults to info.",
+                        dest="log_level",
+                        action="store",
+                        default=os.environ.get("AZURE_LABELER_LOG_LEVEL", "info"),
+                        choices=["debug",
+                                 "info",
+                                 "warning",
+                                 "error",
+                                 "critical"])
+    parser.add_argument("--tenant-id",
+                        "-tid",
+                        dest="tenant_id",
                         type=str,
-                        default=os.environ.get('AZURE_LABELER_TENANT_ID'),
-                        help='The ID of the Tenant to labeled')
-    single_subscription_action = parser.add_argument('--single-subscription-id',
-                                                     '-s',
+                        default=os.environ.get("AZURE_LABELER_TENANT_ID"),
+                        help="The ID of the Tenant to labeled")
+    single_subscription_action = parser.add_argument("--single-subscription-id",
+                                                     "-s",
                                                      required=False,
-                                                     dest='single_subscription_id',
-                                                     action='store',
+                                                     dest="single_subscription_id",
+                                                     action="store",
                                                      type=azure_subscription_id,
-                                                     default=os.environ.get('AZURE_LABELER_SINGLE_SUBSCRIPTION_ID'),
-                                                     help='Run the labeler on a single subscription.')
-    parser.add_argument('--frameworks',
-                        '-f',
-                        default=os.environ.get('AZURE_LABELER_FRAMEWORKS', ['Microsoft cloud security benchmark']),
+                                                     default=os.environ.get("AZURE_LABELER_SINGLE_SUBSCRIPTION_ID"),
+                                                     help="Run the labeler on a single subscription.")
+    parser.add_argument("--frameworks",
+                        "-f",
+                        default=os.environ.get("AZURE_LABELER_FRAMEWORKS") or ["Microsoft cloud security benchmark"],
                         type=comma_delimited_list,
                         help='The comma delimited list of applicable frameworks: \
                                     ["Microsoft cloud security benchmark", "Azure CIS 1.1.0"], '
                              'default=["Microsoft cloud security benchmark"]\n'
                              'example="Microsoft cloud security benchmark,Azure CIS 1.1.0"')
     subscription_list = parser.add_mutually_exclusive_group()
-    subscription_list._group_actions.append(single_subscription_action)  # pylint: disable=protected-access
-    subscription_list.add_argument('--allowed-subscription-ids',
-                                   '-a',
+    subscription_list._group_actions.append(single_subscription_action)  # noqa: SLF001
+    subscription_list.add_argument("--allowed-subscription-ids",
+                                   "-a",
                                    required=False,
-                                   default=os.environ.get('AZURE_LABELER_ALLOWED_SUBSCRIPTION_IDS'),
+                                   default=os.environ.get("AZURE_LABELER_ALLOWED_SUBSCRIPTION_IDS"),
                                    type=comma_delimited_list,
                                    help=('A comma delimited list of Azure Subscription IDs'
                                          ' for which an energy label will be produced. '
@@ -131,10 +132,10 @@ def get_arguments():
                                          '--denied-subscription-ids and --single-subscription-id arguments.\n'
                                          'example='
                                          '"00000000-0000-0000-0000-000000000000,00000000-0000-0000-0000-000000000001"'))
-    subscription_list.add_argument('--denied-subscription-ids',
-                                   '-d',
+    subscription_list.add_argument("--denied-subscription-ids",
+                                   "-d",
                                    required=False,
-                                   default=os.environ.get('AZURE_LABELER_DENIED_SUBSCRIPTION_IDS'),
+                                   default=os.environ.get("AZURE_LABELER_DENIED_SUBSCRIPTION_IDS"),
                                    type=comma_delimited_list,
                                    help=('A comma delimited list of Azure Subscription IDs that will '
                                          'be excluded from producing the energy label. '
@@ -142,58 +143,58 @@ def get_arguments():
                                          '--allowed-subscription-ids and --single-subscription-id arguments.\n'
                                          'example='
                                          '"00000000-0000-0000-0000-000000000000,00000000-0000-0000-0000-000000000001"'))
-    subscription_list.add_argument('--denied-resource-group-names',
-                                   '-e',
+    subscription_list.add_argument("--denied-resource-group-names",
+                                   "-e",
                                    required=False,
-                                   default=os.environ.get('AZURE_LABELER_DENIED_RESOURCE_GROUP_NAMES'),
+                                   default=os.environ.get("AZURE_LABELER_DENIED_RESOURCE_GROUP_NAMES"),
                                    type=comma_delimited_list,
                                    help=('A comma delimited list of Azure resource group names that will '
                                          'be excluded from producing the energy label.\n'
                                          'example='
                                          '"SBPP-WEU-AARC-01-RSG, SBPA-WEU-AARC-01-RSG"'))
-    parser.add_argument('--export-path',
-                        '-p',
+    parser.add_argument("--export-path",
+                        "-p",
                         action=ValidatePath,
                         required=False,
-                        default=os.environ.get('AZURE_LABELER_EXPORT_PATH'),
-                        help='Exports a snapshot of chosen data in '
-                             'JSON formatted files to the specified directory or Storage Account Container location.')
+                        default=os.environ.get("AZURE_LABELER_EXPORT_PATH"),
+                        help="Exports a snapshot of chosen data in "
+                             "JSON formatted files to the specified directory or Storage Account Container location.")
     export_options = parser.add_mutually_exclusive_group()
-    export_options.add_argument('--export-metrics',
-                                '-em',
-                                action='store_const',
-                                dest='export_all',
+    export_options.add_argument("--export-metrics",
+                                "-em",
+                                action="store_const",
+                                dest="export_all",
                                 const=False,
-                                default=os.environ.get('AZURE_LABELER_EXPORT_METRICS'),
-                                help='Exports metrics/statistics along with findings data in '
-                                     'JSON formatted files to the specified directory or '
-                                     'Storage Account Container location.')
-    export_options.add_argument('--export-all',
-                                '-ea',
-                                action='store_const',
-                                dest='export_all',
+                                default=os.environ.get("AZURE_LABELER_EXPORT_METRICS"),
+                                help="Exports metrics/statistics along with findings data in "
+                                     "JSON formatted files to the specified directory or "
+                                     "Storage Account Container location.")
+    export_options.add_argument("--export-all",
+                                "-ea",
+                                action="store_const",
+                                dest="export_all",
                                 const=True,
-                                default=os.environ.get('AZURE_LABELER_EXPORT_ALL', True),
-                                help='Exports metrics/statistics without sensitive findings data in '
-                                     'JSON formatted files to the specified directory or '
-                                     'Storage Account Container location.')
-    parser.add_argument('--to-json',
-                        '-j',
-                        dest='to_json',
-                        action='store_true',
+                                default=os.environ.get("AZURE_LABELER_EXPORT_ALL") or True,
+                                help="Exports metrics/statistics without sensitive findings data in "
+                                     "JSON formatted files to the specified directory or "
+                                     "Storage Account Container location.")
+    parser.add_argument("--to-json",
+                        "-j",
+                        dest="to_json",
+                        action="store_true",
                         required=False,
-                        default=os.environ.get('AZURE_LABELER_TO_JSON', False),
-                        help='Return the report in json format.')
-    parser.add_argument('--disable-spinner',
-                        '-ds',
-                        action='store_true',
-                        default=os.environ.get('AZURE_LABELER_DISABLE_SPINNER', False),
-                        help='If set spinner will be disabled on the CLI.')
-    parser.add_argument('--disable-banner',
-                        '-db',
-                        action='store_true',
-                        default=os.environ.get('AZURE_LABELER_DISABLE_BANNER', False),
-                        help='If set banner will be disabled on the CLI.')
+                        default=os.environ.get("AZURE_LABELER_TO_JSON") or False,
+                        help="Return the report in json format.")
+    parser.add_argument("--disable-spinner",
+                        "-ds",
+                        action="store_true",
+                        default=os.environ.get("AZURE_LABELER_DISABLE_SPINNER") or False,
+                        help="If set spinner will be disabled on the CLI.")
+    parser.add_argument("--disable-banner",
+                        "-db",
+                        action="store_true",
+                        default=os.environ.get("AZURE_LABELER_DISABLE_BANNER") or False,
+                        help="If set banner will be disabled on the CLI.")
     parser.set_defaults(export_all=True)
     args = parser.parse_args()
     args.allowed_subscription_ids, args.denied_subscription_ids = get_mutually_exclusive_args(
@@ -208,7 +209,7 @@ def get_arguments():
     return args
 
 
-def comma_delimited_list(argument, sep=','):
+def comma_delimited_list(argument, sep=","):
     """Takes a str, splits based on character and returns a list."""
     return argument.split(sep)
 
@@ -231,12 +232,11 @@ def setup_logging(level, config_file=None):
         # catching in case the file is not there and everything. Proper IO
         # handling is not shown here.
         try:
-            with open(config_file, encoding='utf-8') as conf_file:
-                configuration = json.loads(conf_file.read())
-                # Configure the logger
-                logging.config.dictConfig(configuration)
+            configuration = json.loads(Path(config_file).read_text(encoding="utf-8"))
+            # Configure the logger
+            logging.config.dictConfig(configuration)
         except ValueError:
-            print(f'File "{config_file}" is not valid json, cannot continue.')
+            sys.stdout.write(f'File "{config_file}" is not valid json, cannot continue.\n')
             raise SystemExit(1) from None
     else:
         coloredlogs.install(level=level.upper())
@@ -255,16 +255,12 @@ def wait_for_findings(method_name, method_argument, log_level, disable_spinner=F
         findings: A list of defender for cloud findings as retrieved by the callable.
 
     """
-    try:
-        if all([log_level != 'debug', not disable_spinner]):
-            with yaspin(text="Please wait while retrieving Defender For Cloud findings...", color="yellow") as spinner:
-                findings = method_name(method_argument)
-            spinner.ok("✅")
-        else:
+    if all([log_level != "debug", not disable_spinner]):
+        with yaspin(text="Please wait while retrieving Defender For Cloud findings...", color="yellow") as spinner:
             findings = method_name(method_argument)
-    except Exception as msg:
-        LOGGER.error(msg)
-        raise SystemExit(1) from None
+        spinner.ok("✅")
+    else:
+        findings = method_name(method_argument)
     return findings
 
 
@@ -303,21 +299,21 @@ def get_tenant_reporting_data(tenant_id,  # pylint: disable=too-many-arguments
                                  denied_resource_group_names=denied_resource_group_names)
     wait_for_findings(AzureEnergyLabeler.filtered_defender_for_cloud_findings.fget,
                       labeler, log_level, disable_spinner=disable_spinner)
-    report_data = [['Tenant ID:', tenant_id],
-                   ['Tenant Security Score:', labeler.tenant_energy_label.label],
-                   ['Tenant Percentage Coverage:', labeler.tenant_energy_label.coverage],
-                   ['Labeled Subscriptions Measured:',
+    report_data = [["Tenant ID:", tenant_id],
+                   ["Tenant Security Score:", labeler.tenant_energy_label.label],
+                   ["Tenant Percentage Coverage:", labeler.tenant_energy_label.coverage],
+                   ["Labeled Subscriptions Measured:",
                     labeler.labeled_subscriptions_energy_label.subscriptions_measured]]
     if labeler.tenant_energy_label.best_label != labeler.tenant_energy_label.worst_label:
-        report_data.extend([['Best Subscription Security Score:', labeler.tenant_energy_label.best_label],
-                            ['Worst Subscription Security Score:', labeler.tenant_energy_label.worst_label]])
+        report_data.extend([["Best Subscription Security Score:", labeler.tenant_energy_label.best_label],
+                            ["Worst Subscription Security Score:", labeler.tenant_energy_label.worst_label]])
     export_types = ALL_TENANT_EXPORT_TYPES if export_all_data_flag else TENANT_METRIC_EXPORT_TYPES
-    exporter_arguments = {'export_types': export_types,
-                          'id': tenant_id,
-                          'energy_label': labeler.tenant_energy_label.label,
-                          'defender_for_cloud_findings': labeler.filtered_defender_for_cloud_findings,
-                          'labeled_subscriptions': labeler.tenant_labeled_subscriptions,
-                          'credentials': labeler.tenant_credentials}
+    exporter_arguments = {"export_types": export_types,
+                          "id": tenant_id,
+                          "energy_label": labeler.tenant_energy_label.label,
+                          "defender_for_cloud_findings": labeler.filtered_defender_for_cloud_findings,
+                          "labeled_subscriptions": labeler.tenant_labeled_subscriptions,
+                          "credentials": labeler.tenant_credentials}
     return report_data, exporter_arguments
 
 
@@ -361,19 +357,19 @@ def get_subscription_reporting_data(  # pylint: disable=too-many-arguments,too-m
     subscription = next(
         subscription for subscription in tenant.subscriptions if subscription.subscription_id == subscription_id)
     energy_label = subscription.get_energy_label(defender_for_cloud_findings)
-    report_data = [['Subscription ID:', subscription.subscription_id],
-                   ['Subscription Security Score:', energy_label.label],
-                   ['Number Of High Findings:', energy_label.number_of_high_findings],
-                   ['Number Of Medium Findings:', energy_label.number_of_medium_findings],
-                   ['Number Of Low Findings:', energy_label.number_of_low_findings],
-                   ['Max Days Open:', energy_label.max_days_open]]
+    report_data = [["Subscription ID:", subscription.subscription_id],
+                   ["Subscription Security Score:", energy_label.label],
+                   ["Number Of High Findings:", energy_label.number_of_high_findings],
+                   ["Number Of Medium Findings:", energy_label.number_of_medium_findings],
+                   ["Number Of Low Findings:", energy_label.number_of_low_findings],
+                   ["Max Days Open:", energy_label.max_days_open]]
     if subscription.display_name:
-        report_data.insert(0, ['Subscription Display Name:', subscription.display_name])
+        report_data.insert(0, ["Subscription Display Name:", subscription.display_name])
     export_types = ALL_SUBSCRIPTION_EXPORT_DATA if export_all_data_flag else SUBSCRIPTION_METRIC_EXPORT_TYPES
-    exporter_arguments = {'export_types': export_types,
-                          'id': subscription.subscription_id,
-                          'energy_label': energy_label.label,
-                          'defender_for_cloud_findings': filtered_findings,
-                          'labeled_subscriptions': [subscription],
-                          'credentials': labeler.tenant_credentials}
+    exporter_arguments = {"export_types": export_types,
+                          "id": subscription.subscription_id,
+                          "energy_label": energy_label.label,
+                          "defender_for_cloud_findings": filtered_findings,
+                          "labeled_subscriptions": [subscription],
+                          "credentials": labeler.tenant_credentials}
     return report_data, exporter_arguments
