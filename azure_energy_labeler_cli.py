@@ -75,33 +75,34 @@ def _get_reporting_arguments(args):
 
 def report(report_data, to_json=False):
     """Report to table or json."""
+    import sys
     if to_json:
         data = {key.replace(":", "").replace(" ", "_").lower(): value for key, value in dict(report_data).items()}
-        print(json.dumps(data, indent=2))
-        return
-    table_data = [["Energy label report"]]
-    table_data.extend(report_data)
-    table = AsciiTable(table_data)
-    print(table.table)
-    return
+        sys.stdout.write(json.dumps(data, indent=2) + "\n")
+    else:
+        table_data = [["Energy label report"]]
+        table_data.extend(report_data)
+        table = AsciiTable(table_data)
+        sys.stdout.write(table.table + "\n")
 
 
 def main():
     """Main method."""
+    import sys
     args = get_arguments()
     setup_logging(args.log_level, args.logger_config)
     logging.getLogger("botocore").setLevel(logging.ERROR)
     try:
         if not args.disable_banner:
-            print(text2art("Azure Energy Labeler"))
+            sys.stdout.write(text2art("Azure Energy Labeler") + "\n")
         report_data, exporter_arguments = _get_reporting_arguments(args)
         if args.export_path:
-            LOGGER.info(f"Trying to export data to the requested path : {args.export_path}")
+            LOGGER.info("Trying to export data to the requested path : %s", args.export_path)
             exporter = DataExporter(**exporter_arguments)
             exporter.export(args.export_path)
         report(report_data, args.to_json)
-    except Exception as msg:
-        LOGGER.error(msg)
+    except Exception:
+        LOGGER.exception("An error occurred during execution")
         raise SystemExit(1) from None
     raise SystemExit(0)
 

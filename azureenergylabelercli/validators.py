@@ -37,8 +37,8 @@ from argparse import ArgumentTypeError
 from azureenergylabelerlib import (is_valid_subscription_id,
                                    DestinationPath)
 
-from .azureenergylabelercliexceptions import (MissingRequiredArguments,
-                                              MutuallyExclusiveArguments)
+from .azureenergylabelercliexceptions import (MissingRequiredArgumentsError,
+                                              MutuallyExclusiveArgumentsError)
 
 
 __author__ = """Sayantan Khanra <skhanra@schubergphilis.com>"""
@@ -62,16 +62,18 @@ class ValidatePath(argparse.Action):
 
     def __init__(self, option_strings, dest, nargs=None, **kwargs):
         if nargs is not None:
-            raise ValueError("nargs not allowed")
+            msg = "nargs not allowed"
+            raise ValueError(msg)
         super().__init__(option_strings, dest, **kwargs)
 
-    def __call__(self, parser, namespace, values, option_string=None):
+    def __call__(self, _parser, namespace, values, _option_string=None):
         destination = DestinationPath(values)
         if not destination.is_valid():
-            raise argparse.ArgumentTypeError(f"{values} is an invalid export location. "
-                                             f"Example --export-path /a/directory or "
-                                             f"--export-path https://<<my_storage_account>>.blob.core.windows.net/"
-                                             f"<<my_container>>/")
+            msg = (f"{values} is an invalid export location. "
+                   f"Example --export-path /a/directory or "
+                   f"--export-path https://<<my_storage_account>>.blob.core.windows.net/"
+                   f"<<my_container>>/")
+            raise argparse.ArgumentTypeError(msg)
         setattr(namespace, self.dest, values)
 
 

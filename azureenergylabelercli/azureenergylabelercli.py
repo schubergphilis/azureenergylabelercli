@@ -111,14 +111,14 @@ def get_arguments():
                                                      help="Run the labeler on a single subscription.")
     parser.add_argument("--frameworks",
                         "-f",
-                        default=os.environ.get("AZURE_LABELER_FRAMEWORKS", ["Microsoft cloud security benchmark"]),
+                        default=os.environ.get("AZURE_LABELER_FRAMEWORKS") or ["Microsoft cloud security benchmark"],
                         type=comma_delimited_list,
                         help='The comma delimited list of applicable frameworks: \
                                     ["Microsoft cloud security benchmark", "Azure CIS 1.1.0"], '
                              'default=["Microsoft cloud security benchmark"]\n'
                              'example="Microsoft cloud security benchmark,Azure CIS 1.1.0"')
     subscription_list = parser.add_mutually_exclusive_group()
-    subscription_list._group_actions.append(single_subscription_action)  # pylint: disable=protected-access
+    subscription_list._group_actions.append(single_subscription_action)  # noqa: SLF001
     subscription_list.add_argument("--allowed-subscription-ids",
                                    "-a",
                                    required=False,
@@ -172,7 +172,7 @@ def get_arguments():
                                 action="store_const",
                                 dest="export_all",
                                 const=True,
-                                default=os.environ.get("AZURE_LABELER_EXPORT_ALL", True),
+                                default=os.environ.get("AZURE_LABELER_EXPORT_ALL") or True,
                                 help="Exports metrics/statistics without sensitive findings data in "
                                      "JSON formatted files to the specified directory or "
                                      "Storage Account Container location.")
@@ -181,17 +181,17 @@ def get_arguments():
                         dest="to_json",
                         action="store_true",
                         required=False,
-                        default=os.environ.get("AZURE_LABELER_TO_JSON", False),
+                        default=os.environ.get("AZURE_LABELER_TO_JSON") or False,
                         help="Return the report in json format.")
     parser.add_argument("--disable-spinner",
                         "-ds",
                         action="store_true",
-                        default=os.environ.get("AZURE_LABELER_DISABLE_SPINNER", False),
+                        default=os.environ.get("AZURE_LABELER_DISABLE_SPINNER") or False,
                         help="If set spinner will be disabled on the CLI.")
     parser.add_argument("--disable-banner",
                         "-db",
                         action="store_true",
-                        default=os.environ.get("AZURE_LABELER_DISABLE_BANNER", False),
+                        default=os.environ.get("AZURE_LABELER_DISABLE_BANNER") or False,
                         help="If set banner will be disabled on the CLI.")
     parser.set_defaults(export_all=True)
     args = parser.parse_args()
@@ -223,6 +223,8 @@ def setup_logging(level, config_file=None):
         config_file: Configuration to use
 
     """
+    import sys
+    from pathlib import Path
     # This will configure the logging, if the user has set a config file.
     # If there's no config file, logging will default to stdout.
     if config_file:
@@ -230,12 +232,11 @@ def setup_logging(level, config_file=None):
         # catching in case the file is not there and everything. Proper IO
         # handling is not shown here.
         try:
-            with open(config_file, encoding="utf-8") as conf_file:
-                configuration = json.loads(conf_file.read())
-                # Configure the logger
-                logging.config.dictConfig(configuration)
+            configuration = json.loads(Path(config_file).read_text(encoding="utf-8"))
+            # Configure the logger
+            logging.config.dictConfig(configuration)
         except ValueError:
-            print(f'File "{config_file}" is not valid json, cannot continue.')
+            sys.stdout.write(f'File "{config_file}" is not valid json, cannot continue.\n')
             raise SystemExit(1) from None
     else:
         coloredlogs.install(level=level.upper())
@@ -254,16 +255,12 @@ def wait_for_findings(method_name, method_argument, log_level, disable_spinner=F
         findings: A list of defender for cloud findings as retrieved by the callable.
 
     """
-    try:
-        if all([log_level != "debug", not disable_spinner]):
-            with yaspin(text="Please wait while retrieving Defender For Cloud findings...", color="yellow") as spinner:
-                findings = method_name(method_argument)
-            spinner.ok("✅")
-        else:
+    if all([log_level != "debug", not disable_spinner]):
+        with yaspin(text="Please wait while retrieving Defender For Cloud findings...", color="yellow") as spinner:
             findings = method_name(method_argument)
-    except Exception as msg:
-        LOGGER.error(msg)
-        raise SystemExit(1) from None
+        spinner.ok("✅")
+    else:
+        findings = method_name(method_argument)
     return findings
 
 

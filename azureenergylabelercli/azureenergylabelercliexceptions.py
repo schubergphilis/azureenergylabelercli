@@ -41,9 +41,9 @@ __email__ = """<skhanra@schubergphilis.com>"""
 __status__ = """Development"""  # "Prototype", "Development", "Production".
 
 
-class MutuallyExclusiveArguments(Exception):
+class MutuallyExclusiveArgumentsError(Exception):
     """Mutually exclusive variables are set."""
 
 
-class MissingRequiredArguments(Exception):
+class MissingRequiredArgumentsError(Exception):
     """Missing a required argument."""
