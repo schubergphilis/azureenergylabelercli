@@ -54,6 +54,15 @@ extensions = [
     "sphinx.ext.todo",
 ]
 
+# Mock imports for modules that are not needed for documentation
+autodoc_mock_imports = [
+    "azureenergylabelerlib",
+    "yaspin",
+    "terminaltables",
+    "art",
+    "coloredlogs",
+]
+
 napoleon_google_docstring = True
 
 # Add any paths that contain templates here, relative to this directory.
