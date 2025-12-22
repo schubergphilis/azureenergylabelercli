@@ -112,3 +112,9 @@ History
 ------------------
 
 * Bump dependencies.
+
+3.0.0 (12-08-2025)
+------------------
+
+* Update to Python 3.14 and bump dependencies.
+* Introduce ruff for linting.

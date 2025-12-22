@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # File: validators.py
 #
 # Copyright 2022 Sayantan Khanra
@@ -42,18 +41,18 @@ from .azureenergylabelercliexceptions import (MissingRequiredArguments,
                                               MutuallyExclusiveArguments)
 
 
-__author__ = '''Sayantan Khanra <skhanra@schubergphilis.com>'''
-__docformat__ = '''google'''
-__date__ = '''04-05-2022'''
-__copyright__ = '''Copyright 2022, Sayantan Khanra'''
+__author__ = """Sayantan Khanra <skhanra@schubergphilis.com>"""
+__docformat__ = """google"""
+__date__ = """04-05-2022"""
+__copyright__ = """Copyright 2022, Sayantan Khanra"""
 __credits__ = ["Sayantan Khanra"]
-__license__ = '''MIT'''
-__maintainer__ = '''Sayantan Khanra'''
-__email__ = '''<skhanra@schubergphilis.com>'''
-__status__ = '''Development'''  # "Prototype", "Development", "Production".
+__license__ = """MIT"""
+__maintainer__ = """Sayantan Khanra"""
+__email__ = """<skhanra@schubergphilis.com>"""
+__status__ = """Development"""  # "Prototype", "Development", "Production".
 
 # This is the main prefix used for logging
-LOGGER_BASENAME = '''validators'''
+LOGGER_BASENAME = """validators"""
 LOGGER = logging.getLogger(LOGGER_BASENAME)
 LOGGER.addHandler(logging.NullHandler())
 
@@ -69,17 +68,17 @@ class ValidatePath(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         destination = DestinationPath(values)
         if not destination.is_valid():
-            raise argparse.ArgumentTypeError(f'{values} is an invalid export location. '
-                                             f'Example --export-path /a/directory or '
-                                             f'--export-path https://<<my_storage_account>>.blob.core.windows.net/'
-                                             f'<<my_container>>/')
+            raise argparse.ArgumentTypeError(f"{values} is an invalid export location. "
+                                             f"Example --export-path /a/directory or "
+                                             f"--export-path https://<<my_storage_account>>.blob.core.windows.net/"
+                                             f"<<my_container>>/")
         setattr(namespace, self.dest, values)
 
 
 def azure_subscription_id(subscription_id):
     """Setting a type for an subscription id argument."""
     if not is_valid_subscription_id(subscription_id):
-        raise ArgumentTypeError(f'Subscription id {subscription_id} provided does not seem to be valid.')
+        raise ArgumentTypeError(f"Subscription id {subscription_id} provided does not seem to be valid.")
     return subscription_id
 
 

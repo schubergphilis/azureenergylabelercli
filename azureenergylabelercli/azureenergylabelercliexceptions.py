@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # File: azureenergylabelercliexceptions.py
 #
 # Copyright 2022 Sayantan Khanra
@@ -31,15 +30,15 @@ Custom exception code for azureenergylabelercli.
 
 """
 
-__author__ = '''Sayantan Khanra <skhanra@schubergphilis.com>'''
-__docformat__ = '''google'''
-__date__ = '''04-05-2022'''
-__copyright__ = '''Copyright 2022, Sayantan Khanra'''
+__author__ = """Sayantan Khanra <skhanra@schubergphilis.com>"""
+__docformat__ = """google"""
+__date__ = """04-05-2022"""
+__copyright__ = """Copyright 2022, Sayantan Khanra"""
 __credits__ = ["Sayantan Khanra"]
-__license__ = '''MIT'''
-__maintainer__ = '''Sayantan Khanra'''
-__email__ = '''<skhanra@schubergphilis.com>'''
-__status__ = '''Development'''  # "Prototype", "Development", "Production".
+__license__ = """MIT"""
+__maintainer__ = """Sayantan Khanra"""
+__email__ = """<skhanra@schubergphilis.com>"""
+__status__ = """Development"""  # "Prototype", "Development", "Production".
 
 
 class MutuallyExclusiveArguments(Exception):
