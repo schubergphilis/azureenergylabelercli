@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # File: __init__.py
 #
 # Copyright 2022 Sayantan Khanra

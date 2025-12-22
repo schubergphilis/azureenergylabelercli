@@ -13,9 +13,9 @@
 # serve to show the default.
 
 import sys
-import os
-import sphinx_rtd_theme
 from pathlib import Path
+
+import sphinx.ext.apidoc
 
 # If extensions (or modules to document with autodoc) are in another
 # directory, add these directories to sys.path here. If the directory is
@@ -28,8 +28,6 @@ cwd = Path.cwd()
 project_root = cwd.parent
 
 # Run apidoc to traverse the project directory and add all modules to the docs
-import sphinx.ext.apidoc
-
 sphinx.ext.apidoc.main(["-f", "-o", str(project_root / "docs"),
                         str(project_root / "azureenergylabelercli")])
 
@@ -87,7 +85,8 @@ master_doc = "index"
 
 # General information about the project.
 project = """azureenergylabelercli"""
-copyright = """2022, (Author : Sayantan Khanra)"""
+project_copyright = """2022, (Author : Sayantan Khanra)"""
+copyright = project_copyright  # Sphinx expects this variable name  # noqa: A001
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout

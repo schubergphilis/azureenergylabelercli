@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
+from pathlib import Path
 from setuptools import setup, find_packages
+
 try:
     from pipenv.project import Project
     from pipenv.utils import convert_deps_to_pip
@@ -11,17 +13,17 @@ try:
 except ImportError:
     # get the requirements from the requirements.txt
     requirements = [line.strip()
-                    for line in open("requirements.txt")
+                    for line in Path("requirements.txt").read_text(encoding="utf-8").splitlines()
                     if line.strip() and not line.startswith("#") and not line.startswith("-")]
     # get the test requirements from the test_requirements.txt
     test_requirements = [line.strip()
                          for line in
-                         open("dev-requirements.txt")
+                         Path("dev-requirements.txt").read_text(encoding="utf-8").splitlines()
                          if line.strip() and not line.startswith("#") and not line.startswith("-")]
 
-readme = open("README.rst").read()
-history = open("HISTORY.rst").read().replace(".. :changelog:", "")
-version = open(".VERSION").read()
+readme = Path("README.rst").read_text(encoding="utf-8")
+history = Path("HISTORY.rst").read_text(encoding="utf-8").replace(".. :changelog:", "")
+version = Path(".VERSION").read_text(encoding="utf-8")
 
 
 setup(

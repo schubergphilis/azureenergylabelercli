@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # File: azureenergylabelercliexceptions.py
 #
 # Copyright 2022 Sayantan Khanra

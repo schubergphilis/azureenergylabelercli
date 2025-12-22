@@ -30,12 +30,14 @@ Main code for azureenergylabelercli.
 
 """
 
+import sys
 import logging
 import logging.config
 import json
 import argparse
 import os
 import coloredlogs
+from pathlib import Path
 
 from yaspin import yaspin
 from azureenergylabelerlib import (AzureEnergyLabeler,
@@ -223,8 +225,6 @@ def setup_logging(level, config_file=None):
         config_file: Configuration to use
 
     """
-    import sys
-    from pathlib import Path
     # This will configure the logging, if the user has set a config file.
     # If there's no config file, logging will default to stdout.
     if config_file:

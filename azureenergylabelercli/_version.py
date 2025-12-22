@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # File: _version.py
 #
 # Copyright 2022 Sayantan Khanra

@@ -32,6 +32,7 @@ Main code for azure_energy_labeler_cli.
 
 import logging
 import json
+import sys
 from art import text2art
 from terminaltables import AsciiTable
 from azureenergylabelerlib import DataExporter
@@ -75,7 +76,6 @@ def _get_reporting_arguments(args):
 
 def report(report_data, to_json=False):
     """Report to table or json."""
-    import sys
     if to_json:
         data = {key.replace(":", "").replace(" ", "_").lower(): value for key, value in dict(report_data).items()}
         sys.stdout.write(json.dumps(data, indent=2) + "\n")
@@ -88,7 +88,6 @@ def report(report_data, to_json=False):
 
 def main():
     """Main method."""
-    import sys
     args = get_arguments()
     setup_logging(args.log_level, args.logger_config)
     logging.getLogger("botocore").setLevel(logging.ERROR)

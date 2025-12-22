@@ -46,9 +46,9 @@ __email__ = """<skhanra@schubergphilis.com>"""
 __status__ = """Development"""  # "Prototype", "Development", "Production".
 
 __all__ = [
-    "__version__",
-    "get_arguments",
-    "setup_logging",
-    "get_tenant_reporting_data",
-    "get_subscription_reporting_data",
+                                    "__version__",
+                                    "get_arguments",
+                                    "get_subscription_reporting_data",
+                                    "get_tenant_reporting_data",
+                                    "setup_logging",
 ]

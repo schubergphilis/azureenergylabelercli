@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # File: test_azureenergylabelercli.py
 #
 # Copyright 2022 Sayantan Khanra
