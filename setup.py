@@ -29,10 +29,11 @@ setup(
     version=version,
     description="""A cli to help generate energy label for Azure tenant, subscriptions and resource groups.""",
     long_description=readme + "\n\n" + history,
+    long_description_content_type="text/x-rst",
     author="""Sayantan Khanra""",
     author_email="""skhanra@schubergphilis.com""",
     url="""https://github.com/schubergphilis/azureenergylabelercli""",
-    packages=find_packages(where=".", exclude=("tests", "hooks", "_CI*")),
+    packages=find_packages(where=".", exclude=("tests", "hooks")),
     package_dir={"""azureenergylabelercli""":
                  """azureenergylabelercli"""},
     include_package_data=True,
