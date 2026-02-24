@@ -112,3 +112,9 @@ History
 ------------------
 
 * Bump dependencies.
+
+
+2.2.8 (24-02-2026)
+------------------
+
+* Bump dependency for azureenergylabelerlib 3.3.4
