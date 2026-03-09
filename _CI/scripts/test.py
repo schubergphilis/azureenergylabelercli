@@ -25,7 +25,6 @@
 
 import logging
 import os
-from time import sleep
 
 # this sets up everything and MUST be included before any third party module in every step
 import _initialize_template
@@ -51,8 +50,6 @@ def test():
     success = execute_command('tox')
     try:
         open_file(os.path.join('test-output', 'coverage', 'index.html'))
-        sleep(0.5)
-        open_file(os.path.join('test-output', 'nosetests.html'))
     except Exception:
         LOGGER.warning('Could not execute UI portion. Maybe running headless?')
     if success:
