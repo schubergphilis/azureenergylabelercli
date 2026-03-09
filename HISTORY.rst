@@ -112,3 +112,9 @@ History
 ------------------
 
 * Bump dependencies.
+
+
+2.2.8 (09-03-2026)
+------------------
+
+* Upgrade azureenergylabelerlib to 4.0.1 and use python 3.12 as runtime
