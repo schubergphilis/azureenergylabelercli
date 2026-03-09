@@ -33,7 +33,13 @@ Tests for `azureenergylabelercli` module.
 
 """
 
-from betamax.fixtures import unittest
+import json
+import sys
+import unittest
+from unittest.mock import patch
+
+from azureenergylabelercli.azureenergylabelercli import get_arguments
+from azureenergylabelercli.azureenergylabelercliexceptions import MissingRequiredArguments
 
 __author__ = '''Sayantan Khanra <skhanra@schubergphilis.com>'''
 __docformat__ = '''google'''
@@ -46,20 +52,29 @@ __email__ = '''<skhanra@schubergphilis.com>'''
 __status__ = '''Development'''  # "Prototype", "Development", "Production".
 
 
-class TestAzureenergylabelercli(unittest.BetamaxTestCase):
+class TestGetArguments(unittest.TestCase):
 
-    def setUp(self):
-        """
-        Test set up
+    def test_minimal_arguments(self):
+        """Test that providing only --tenant-id produces valid args."""
+        test_args = ['prog', '--tenant-id', '00000000-0000-0000-0000-000000000000']
+        with patch.object(sys, 'argv', test_args):
+            args = get_arguments()
+        self.assertEqual(args.tenant_id, '00000000-0000-0000-0000-000000000000')
+        self.assertEqual(args.log_level, 'info')
+        self.assertFalse(args.to_json)
+        self.assertTrue(args.export_all)
 
-        This is where you can setup things that you use throughout the tests. This method is called before every test.
-        """
-        pass
+    def test_missing_tenant_id_raises(self):
+        """Test that missing --tenant-id raises MissingRequiredArguments."""
+        test_args = ['prog']
+        with patch.object(sys, 'argv', test_args):
+            with self.assertRaises(MissingRequiredArguments):
+                get_arguments()
 
-    def tearDown(self):
-        """
-        Test tear down
-
-        This is where you should tear down what you've setup in setUp before. This method is called after every test.
-        """
-        pass
+    def test_frameworks_parsed_as_list(self):
+        """Test that comma-delimited frameworks are parsed into a list."""
+        test_args = ['prog', '--tenant-id', '00000000-0000-0000-0000-000000000000',
+                     '--frameworks', 'Microsoft cloud security benchmark,Azure CIS 1.1.0']
+        with patch.object(sys, 'argv', test_args):
+            args = get_arguments()
+        self.assertEqual(args.frameworks, ['Microsoft cloud security benchmark', 'Azure CIS 1.1.0'])
