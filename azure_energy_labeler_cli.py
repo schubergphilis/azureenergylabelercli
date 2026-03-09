@@ -97,7 +97,7 @@ def main():
             print(text2art("Azure Energy Labeler"))
         report_data, exporter_arguments = _get_reporting_arguments(args)
         if args.export_path:
-            LOGGER.info(f'Trying to export data to the requested path : {args.export_path}')
+            LOGGER.info(f'Trying to export data to the requested path: {args.export_path}')
             exporter = DataExporter(**exporter_arguments)
             exporter.export(args.export_path)
         report(report_data, args.to_json)

@@ -71,7 +71,7 @@ class ValidatePath(argparse.Action):
         if not destination.is_valid():
             raise argparse.ArgumentTypeError(f'{values} is an invalid export location. '
                                              f'Example --export-path /a/directory or '
-                                             f'--export-path https://<<my_storage_account>>.blob.core.windows.net/'
+                                             f'--export-path https://<<my_storage_account>>.blob.core.windows.net/'  # noqa: E231
                                              f'<<my_container>>/')
         setattr(namespace, self.dest, values)
 
