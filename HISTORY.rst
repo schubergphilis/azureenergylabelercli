@@ -118,3 +118,9 @@ History
 ------------------
 
 * Upgrade azureenergylabelerlib to 4.0.1 and use python 3.12 as runtime
+
+
+2.2.9 (09-03-2026)
+------------------
+
+* bump twine version
